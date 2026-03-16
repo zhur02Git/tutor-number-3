@@ -103,23 +103,39 @@
     .subject-card.active .subject-card-desc { color:var(--accent); opacity:.8; }
 
     /* ── Subject Example Preview ── */
-    .subject-examples { margin-top:16px; padding:16px; background:var(--bg3); border:1px solid var(--accent-border); border-radius:var(--radius-sm); animation:fadeUp .3s ease both; }
-    .subject-examples-label { font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
-    .example-q { margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--border); }
-    .example-q:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
-    .example-q-text { font-size:13px; color:var(--text); margin-bottom:6px; line-height:1.5; }
-    .example-q-type { display:inline-block; padding:1px 7px; border-radius:10px; font-size:10px; font-weight:600; margin-bottom:6px; }
-    .example-q-type.mcq { background:var(--blue-bg); color:var(--blue); border:1px solid var(--blue-border); }
-    .example-q-type.short { background:var(--teal-bg); color:var(--teal); border:1px solid var(--teal-border); }
-    .example-options { display:flex; flex-direction:column; gap:4px; }
-    .example-option { font-size:12px; color:var(--text3); padding:3px 0; }
-    .example-option.correct-opt { color:var(--green); font-weight:500; }
 
-    /* ── Topic Pills ── */
-    .topic-pills { display:flex; flex-wrap:wrap; gap:7px; }
-    .topic-pill { padding:6px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:20px; color:var(--text2); font-size:12px; cursor:pointer; transition:all .15s; }
-    .topic-pill:hover { border-color:var(--border-hi); color:var(--text); }
-    .topic-pill.active { border-color:var(--accent-border); background:var(--accent-bg); color:var(--accent2); }
+
+    /* ── Topic Cards (expandable) ── */
+    .topic-list { display:flex; flex-direction:column; gap:6px; }
+    .topic-item { border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; transition:border-color .15s; }
+    .topic-item.selected { border-color:var(--accent-border); }
+    .topic-item-header { display:flex; align-items:center; gap:10px; padding:10px 14px; cursor:pointer; background:var(--bg3); transition:background .15s; user-select:none; }
+    .topic-item-header:hover { background:var(--bg2); }
+    .topic-item.selected .topic-item-header { background:var(--accent-bg); }
+    .topic-checkbox { width:18px; height:18px; border-radius:4px; border:1px solid var(--border); background:var(--bg); display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .15s; font-size:11px; color:transparent; }
+    .topic-item.selected .topic-checkbox { background:var(--accent); border-color:var(--accent); color:#0d0f14; }
+    .topic-item-name { font-size:13px; color:var(--text2); flex:1; transition:color .15s; }
+    .topic-item.selected .topic-item-name { color:var(--accent2); font-weight:500; }
+    .topic-item-chevron { font-size:11px; color:var(--text3); transition:transform .2s; flex-shrink:0; }
+    .topic-item.open .topic-item-chevron { transform:rotate(180deg); }
+    .topic-item-body { display:none; padding:14px; border-top:1px solid var(--border); background:var(--bg2); }
+    .topic-item.open .topic-item-body { display:block; animation:fadeUp .2s ease; }
+    .topic-ex-label { font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+    .topic-ex-q { margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--border); }
+    .topic-ex-q:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
+    .topic-ex-q-text { font-size:13px; color:var(--text); line-height:1.5; margin-bottom:5px; }
+    .topic-ex-type { display:inline-block; padding:1px 7px; border-radius:10px; font-size:10px; font-weight:600; margin-bottom:5px; }
+    .topic-ex-type.mcq { background:var(--blue-bg); color:var(--blue); border:1px solid var(--blue-border); }
+    .topic-ex-type.short { background:var(--teal-bg); color:var(--teal); border:1px solid var(--teal-border); }
+    .topic-ex-options { display:flex; flex-direction:column; gap:3px; margin-top:4px; }
+    .topic-ex-option { font-size:12px; color:var(--text3); padding:2px 0; }
+    .topic-ex-option.correct-opt { color:var(--green); font-weight:500; }
+    .topic-all-row { display:flex; align-items:center; gap:10px; padding:10px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; transition:all .15s; margin-bottom:6px; }
+    .topic-all-row:hover { border-color:var(--border-hi); }
+    .topic-all-row.active { border-color:var(--accent-border); background:var(--accent-bg); }
+    .topic-all-row.active .topic-checkbox { background:var(--accent); border-color:var(--accent); color:#0d0f14; }
+    .topic-all-name { font-size:13px; font-weight:500; color:var(--text2); }
+    .topic-all-row.active .topic-all-name { color:var(--accent2); }
 
     /* ── Controls ── */
     .controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
@@ -340,13 +356,11 @@
       <div class="card">
         <div class="card-label">Subject</div>
         <div class="subject-cards" id="subject-cards"></div>
-        <!-- Example preview shown after subject click -->
-        <div id="subject-examples" style="display:none"></div>
       </div>
 
       <div class="card" id="topic-card" style="display:none">
-        <div class="card-label">Topic / skill area <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(click a topic to see example questions, or leave as All)</span></div>
-        <div class="topic-pills" id="topic-pills"></div>
+        <div class="card-label">Topic / skill area <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(select topics · click any to see sample questions)</span></div>
+        <div class="topic-list" id="topic-list"></div>
       </div>
 
       <div class="card">
@@ -737,7 +751,6 @@ function switchUser() {
   document.getElementById('user-select-screen').style.display='flex';
   currentUser=null; selectedSubject=null; selectedTopics=[];
   document.getElementById('topic-card').style.display='none';
-  document.getElementById('subject-examples').style.display='none';
 }
 
 /* ══════════════════════════════════════════
@@ -780,86 +793,108 @@ function selectSubject(id) {
   selectedSubject=user.subjects.find(s=>s.id===id);
   selectedTopics=[];
   document.querySelectorAll('.subject-card').forEach(c=>c.classList.toggle('active',c.dataset.id===id));
-  // Hide example panel when switching subject — reappears on topic pill click
-  document.getElementById('subject-examples').style.display='none';
-  buildTopicPills();
+  buildTopicCards();
 }
 
-/* ── Topic Example Preview — fires when a topic pill is clicked ── */
-function renderTopicExample(topicName) {
-  const box=document.getElementById('subject-examples');
-  const examples=TOPIC_EXAMPLES[topicName];
-  if (!examples||examples.length===0) { box.style.display='none'; return; }
-
-  let html=`<div class="subject-examples">
-    <div class="subject-examples-label">Sample questions · ${topicName}</div>`;
-
-  examples.forEach(ex=>{
-    const typeLabel=ex.type==='mcq'?'Multiple Choice':'Short Answer';
-    html+=`<div class="example-q">
-      <span class="example-q-type ${ex.type}">${typeLabel}</span>
-      <div class="example-q-text">${ex.q}</div>`;
-    if (ex.type==='mcq'&&ex.opts) {
-      html+='<div class="example-options">';
-      ex.opts.forEach(opt=>{
-        const isAns=opt[0]===ex.ans;
-        html+=`<div class="example-option ${isAns?'correct-opt':''}">${opt}${isAns?' ✓':''}</div>`;
-      });
-      html+='</div>';
-    } else {
-      html+=`<div class="example-option correct-opt" style="margin-top:4px">✓ ${ex.ans}</div>`;
-    }
-    html+='</div>';
-  });
-  html+='</div>';
-  box.innerHTML=html; box.style.display='';
-  // Scroll the example into view smoothly
-  box.scrollIntoView({behavior:'smooth',block:'nearest'});
-}
-
-function buildTopicPills() {
+function buildTopicCards() {
   const card=document.getElementById('topic-card');
-  const pills=document.getElementById('topic-pills');
-  card.style.display=''; pills.innerHTML='';
-  const allPill=makePill('All topics',true,()=>{
+  const list=document.getElementById('topic-list');
+  card.style.display=''; list.innerHTML='';
+
+  // "All topics" row
+  const allRow=document.createElement('div');
+  allRow.className='topic-all-row active';
+  allRow.innerHTML=`<div class="topic-checkbox">✓</div><div class="topic-all-name">All topics</div>`;
+  allRow.addEventListener('click',()=>{
     selectedTopics=[];
-    pills.querySelectorAll('.topic-pill').forEach(p=>p.classList.remove('active'));
-    allPill.classList.add('active');
-    // Hide examples when "All topics" selected
-    document.getElementById('subject-examples').style.display='none';
+    // Deselect all topic items
+    list.querySelectorAll('.topic-item').forEach(item=>{
+      item.classList.remove('selected');
+      item.querySelector('.topic-checkbox').style.color='transparent';
+    });
+    allRow.classList.add('active');
+    allRow.querySelector('.topic-checkbox').style.color='';
   });
-  pills.appendChild(allPill);
-  selectedSubject.topics.forEach(t=>{
-    const p=makePill(t,false,()=>{
-      allPill.classList.remove('active');
-      const idx=selectedTopics.indexOf(t);
-      if (idx>-1) {
-        selectedTopics.splice(idx,1);
-        p.classList.remove('active');
-        // If this was the only selected topic, hide examples
-        if (selectedTopics.length===0) {
-          allPill.classList.add('active');
-          document.getElementById('subject-examples').style.display='none';
+  list.appendChild(allRow);
+
+  selectedSubject.topics.forEach(topicName=>{
+    const examples=TOPIC_EXAMPLES[topicName]||[];
+    const item=document.createElement('div');
+    item.className='topic-item';
+    item.dataset.topic=topicName;
+
+    // Build example HTML
+    let exHtml='';
+    if (examples.length>0) {
+      exHtml+=`<div class="topic-ex-label">Sample questions</div>`;
+      examples.forEach(ex=>{
+        const typeLabel=ex.type==='mcq'?'Multiple Choice':'Short Answer';
+        exHtml+=`<div class="topic-ex-q">
+          <span class="topic-ex-type ${ex.type}">${typeLabel}</span>
+          <div class="topic-ex-q-text">${ex.q}</div>`;
+        if (ex.type==='mcq'&&ex.opts) {
+          exHtml+='<div class="topic-ex-options">';
+          ex.opts.forEach(opt=>{
+            const isAns=opt[0]===ex.ans;
+            exHtml+=`<div class="topic-ex-option ${isAns?'correct-opt':''}">${opt}${isAns?' ✓':''}</div>`;
+          });
+          exHtml+='</div>';
         } else {
-          // Show example for the most recently selected topic
-          renderTopicExample(selectedTopics[selectedTopics.length-1]);
+          exHtml+=`<div class="topic-ex-option correct-opt" style="margin-top:4px">✓ ${ex.ans}</div>`;
+        }
+        exHtml+='</div>';
+      });
+    } else {
+      exHtml+='<div style="font-size:12px;color:var(--text3)">No sample questions available for this topic yet.</div>';
+    }
+
+    item.innerHTML=`
+      <div class="topic-item-header">
+        <div class="topic-checkbox">✓</div>
+        <div class="topic-item-name">${topicName}</div>
+        ${examples.length>0?'<span class="topic-item-chevron">▾</span>':''}
+      </div>
+      ${examples.length>0?`<div class="topic-item-body">${exHtml}</div>`:''}`;
+
+    const header=item.querySelector('.topic-item-header');
+    const body=item.querySelector('.topic-item-body');
+    const chevron=item.querySelector('.topic-item-chevron');
+
+    header.addEventListener('click',()=>{
+      const isSelected=item.classList.contains('selected');
+      // Toggle selection
+      if (isSelected) {
+        // Deselect
+        item.classList.remove('selected');
+        const idx=selectedTopics.indexOf(topicName);
+        if (idx>-1) selectedTopics.splice(idx,1);
+        if (selectedTopics.length===0) {
+          allRow.classList.add('active');
+        }
+        // Close body if open
+        if (item.classList.contains('open')) {
+          item.classList.remove('open');
         }
       } else {
-        selectedTopics.push(t);
-        p.classList.add('active');
-        // Show example for the just-selected topic
-        renderTopicExample(t);
+        // Select
+        item.classList.add('selected');
+        selectedTopics.push(topicName);
+        allRow.classList.remove('active');
+        // Toggle body open/close only if there are examples
+        if (body) {
+          if (item.classList.contains('open')) {
+            item.classList.remove('open');
+          } else {
+            item.classList.add('open');
+          }
+        }
       }
     });
-    pills.appendChild(p);
+
+    list.appendChild(item);
   });
 }
 
-function makePill(label,active,onClick) {
-  const p=document.createElement('div');
-  p.className='topic-pill'+(active?' active':'');
-  p.textContent=label; p.addEventListener('click',onClick); return p;
-}
 
 /* ══════════════════════════════════════════
    VIEW HELPERS
