@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Singapore Secondary Quiz — AI-Powered Practice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d0f14; --bg2: #13161e; --bg3: #1a1e28;
+      --border: rgba(255,255,255,0.07); --border-hi: rgba(255,255,255,0.14);
+      --text: #e8e6e0; --text2: #9b9890; --text3: #5c5a56;
+      --accent: #c9a96e; --accent2: #e8c98a;
+      --accent-bg: rgba(201,169,110,0.10); --accent-border: rgba(201,169,110,0.28);
+      --green: #5db87a; --green-bg: rgba(93,184,122,0.10); --green-border: rgba(93,184,122,0.28);
+      --red: #e05c5c; --red-bg: rgba(224,92,92,0.10); --red-border: rgba(224,92,92,0.28);
+      --blue: #6ab0e0; --blue-bg: rgba(106,176,224,0.10); --blue-border: rgba(106,176,224,0.28);
+      --purple: #9b8fe0; --purple-bg: rgba(155,143,224,0.10);
+      --font-display: 'DM Serif Display', serif; --font-body: 'DM Sans', sans-serif;
+      --radius: 12px; --radius-sm: 8px;
+    }
+    body { background:var(--bg); color:var(--text); font-family:var(--font-body); font-size:15px; line-height:1.6; min-height:100vh; }
+    body::before {
+      content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+      background-image: linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),
+                        linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
+      background-size:40px 40px;
+    }
+    .page { position:relative; z-index:1; max-width:700px; margin:0 auto; padding:0 20px 60px; }
+
+    /* Header */
+    .site-header { padding:40px 0 28px; text-align:center; animation:fadeUp .6s ease both; }
+    .eyebrow { font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+    .site-header h1 { font-family:var(--font-display); font-size:clamp(26px,5vw,38px); font-weight:400; color:var(--text); line-height:1.15; }
+    .site-header h1 em { font-style:italic; color:var(--accent2); }
+    .site-header p { margin-top:8px; font-size:14px; color:var(--text2); }
+
+    /* Nav Tabs */
+    .nav-tabs { display:flex; gap:4px; margin-bottom:16px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:4px; animation:fadeUp .4s ease both; }
+    .nav-tab { flex:1; padding:9px 12px; border:none; border-radius:var(--radius-sm); background:transparent; color:var(--text2); font-family:var(--font-body); font-size:13px; font-weight:500; cursor:pointer; transition:all .15s; text-align:center; }
+    .nav-tab:hover { color:var(--text); }
+    .nav-tab.active { background:var(--bg3); color:var(--text); border:1px solid var(--border-hi); }
+    .tab-badge { display:inline-block; margin-left:5px; padding:1px 6px; border-radius:10px; font-size:10px; font-weight:600; background:var(--red-bg); color:var(--red); border:1px solid var(--red-border); }
+
+    /* Card */
+    .card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:22px; margin-bottom:12px; animation:fadeUp .5s ease both; }
+    .card-label { font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--text3); margin-bottom:14px; }
+
+    /* API */
+    .api-row { display:flex; gap:8px; }
+    .api-input { flex:1; padding:9px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:'Courier New',monospace; font-size:12px; outline:none; transition:border-color .2s; }
+    .api-input:focus { border-color:var(--accent-border); }
+    .api-note { font-size:11px; color:var(--text3); margin-top:7px; }
+    .api-note a { color:var(--accent); text-decoration:none; }
+
+    /* Level Toggle */
+    .level-toggle { display:flex; gap:8px; }
+    .level-btn { flex:1; padding:14px 10px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text2); font-family:var(--font-body); font-size:14px; font-weight:500; cursor:pointer; text-align:center; transition:all .2s; }
+    .level-btn:hover { border-color:var(--border-hi); color:var(--text); }
+    .level-btn.active { border-color:var(--accent-border); background:var(--accent-bg); color:var(--accent2); }
+    .level-btn .level-sub { display:block; font-size:11px; font-weight:400; color:var(--text3); margin-top:3px; }
+    .level-btn.active .level-sub { color:var(--accent); }
+
+    /* Subject Cards */
+    .subject-cards { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+    @media(max-width:480px) { .subject-cards { grid-template-columns:1fr; } }
+    .subject-card { padding:14px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; transition:all .18s; }
+    .subject-card:hover { border-color:var(--border-hi); }
+    .subject-card.active { border-color:var(--accent-border); background:var(--accent-bg); }
+    .subject-card-name { font-size:14px; font-weight:500; color:var(--text); margin-bottom:4px; }
+    .subject-card.active .subject-card-name { color:var(--accent2); }
+    .subject-card-desc { font-size:11px; color:var(--text3); }
+    .subject-card.active .subject-card-desc { color:var(--accent); opacity:.8; }
+
+    /* Topic Pills */
+    .topic-pills { display:flex; flex-wrap:wrap; gap:7px; }
+    .topic-pill { padding:6px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:20px; color:var(--text2); font-size:12px; cursor:pointer; transition:all .15s; }
+    .topic-pill:hover { border-color:var(--border-hi); color:var(--text); }
+    .topic-pill.active { border-color:var(--accent-border); background:var(--accent-bg); color:var(--accent2); }
+
+    /* Controls */
+    .controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    select { padding:8px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font-body); font-size:13px; cursor:pointer; outline:none; transition:border-color .2s; }
+    select:focus { border-color:var(--accent-border); }
+
+    /* Buttons */
+    .btn { padding:9px 20px; border-radius:var(--radius-sm); border:none; font-family:var(--font-body); font-size:13px; font-weight:500; cursor:pointer; transition:all .15s; white-space:nowrap; }
+    .btn:disabled { opacity:.4; cursor:not-allowed; }
+    .btn-primary { background:var(--accent); color:#0d0f14; }
+    .btn-primary:hover:not(:disabled) { background:var(--accent2); transform:translateY(-1px); }
+    .btn-ghost { background:transparent; border:1px solid var(--border); color:var(--text2); }
+    .btn-ghost:hover:not(:disabled) { border-color:var(--border-hi); color:var(--text); }
+    .btn-danger { background:transparent; border:1px solid var(--red-border); color:var(--red); }
+    .btn-danger:hover:not(:disabled) { background:var(--red-bg); }
+    .btn-sm { padding:6px 14px; font-size:12px; }
+
+    /* Progress */
+    .progress-wrap { margin-bottom:20px; }
+    .progress-meta { display:flex; justify-content:space-between; font-size:11px; color:var(--text3); margin-bottom:6px; }
+    .progress-bar { height:3px; background:var(--border); border-radius:2px; overflow:hidden; }
+    .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:2px; transition:width .4s ease; }
+
+    /* Question */
+    .q-topic-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; margin-bottom:12px; background:var(--blue-bg); color:var(--blue); border:1px solid var(--blue-border); }
+    .question-text { font-family:var(--font-display); font-size:18px; font-weight:400; color:var(--text); line-height:1.55; margin-bottom:18px; }
+
+    /* Options */
+    .options { display:flex; flex-direction:column; gap:8px; }
+    .option { display:flex; align-items:flex-start; gap:12px; padding:12px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; transition:all .15s; }
+    .option:hover { border-color:var(--border-hi); }
+    .option.selected { border-color:var(--accent-border); background:var(--accent-bg); }
+    .option.correct { border-color:var(--green-border); background:var(--green-bg); }
+    .option.wrong { border-color:var(--red-border); background:var(--red-bg); }
+    .option-letter { width:24px; height:24px; border-radius:50%; background:var(--border); color:var(--text2); font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; transition:all .15s; }
+    .option.selected .option-letter { background:var(--accent); color:#0d0f14; }
+    .option.correct .option-letter { background:var(--green); color:#0d0f14; }
+    .option.wrong .option-letter { background:var(--red); color:#fff; }
+    .option-text { font-size:14px; color:var(--text); line-height:1.5; }
+    .sa-textarea { width:100%; padding:12px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font-body); font-size:14px; resize:vertical; min-height:90px; outline:none; transition:border-color .2s; }
+    .sa-textarea:focus { border-color:var(--accent-border); }
+
+    /* Feedback */
+    .feedback { margin-top:12px; padding:14px; border-radius:var(--radius-sm); font-size:13px; line-height:1.65; animation:fadeUp .3s ease; }
+    .feedback.correct { background:var(--green-bg); border:1px solid var(--green-border); color:#7ed4a0; }
+    .feedback.wrong { background:var(--red-bg); border:1px solid var(--red-border); color:#e08080; }
+    .feedback.info { background:var(--accent-bg); border:1px solid var(--accent-border); color:var(--accent2); }
+    .feedback.blue { background:var(--blue-bg); border:1px solid var(--blue-border); color:var(--blue); }
+    .feedback-title { font-weight:600; margin-bottom:4px; }
+    .feedback-body { color:var(--text2); font-size:13px; margin-top:6px; }
+
+    /* Nav Row */
+    .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:18px; gap:10px; flex-wrap:wrap; }
+
+    /* Loading */
+    .loading-state { display:flex; flex-direction:column; align-items:center; padding:48px 20px; gap:14px; text-align:center; }
+    .spinner { width:32px; height:32px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; }
+    .spinner-sm { width:16px; height:16px; border-width:2px; }
+    .loading-label { font-size:14px; color:var(--text2); }
+    .loading-sub { font-size:12px; color:var(--text3); }
+
+    /* Results */
+    .result-hero { text-align:center; padding:32px 20px 24px; }
+    .result-pct { font-family:var(--font-display); font-size:68px; color:var(--accent2); line-height:1; }
+    .result-grade { font-size:15px; color:var(--text2); margin-top:8px; }
+    .result-breakdown { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:22px 0 24px; }
+    .rb-item { padding:14px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); text-align:center; }
+    .rb-val { font-family:var(--font-display); font-size:28px; color:var(--text); }
+    .rb-lbl { font-size:11px; color:var(--text3); margin-top:2px; }
+
+    /* Review */
+    .review-item { border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; margin-bottom:8px; }
+    .review-header { display:flex; align-items:center; gap:10px; padding:12px 14px; background:var(--bg3); cursor:pointer; font-size:13px; }
+    .review-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+    .review-dot.correct { background:var(--green); }
+    .review-dot.wrong { background:var(--red); }
+    .review-q { color:var(--text2); flex:1; }
+    .review-body { padding:14px; font-size:13px; color:var(--text2); border-top:1px solid var(--border); line-height:1.65; display:none; }
+    .review-body.open { display:block; }
+    .review-body strong { color:var(--text); }
+
+    /* Error Bank */
+    .empty-state { text-align:center; padding:40px 20px; color:var(--text3); font-size:14px; }
+    .empty-state .big { font-family:var(--font-display); font-size:32px; color:var(--text2); margin-bottom:8px; }
+    .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
+    .stat-item { padding:12px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); text-align:center; }
+    .stat-val { font-family:var(--font-display); font-size:24px; color:var(--text); }
+    .stat-lbl { font-size:10px; color:var(--text3); margin-top:2px; letter-spacing:.05em; text-transform:uppercase; }
+    .filter-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+    .filter-pill { padding:5px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:20px; color:var(--text2); font-size:12px; cursor:pointer; transition:all .15s; }
+    .filter-pill:hover { border-color:var(--border-hi); color:var(--text); }
+    .filter-pill.active { border-color:var(--accent-border); background:var(--accent-bg); color:var(--accent2); }
+    .error-entry { background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; margin-bottom:8px; }
+    .error-entry-header { display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; }
+    .error-badge { padding:2px 8px; border-radius:10px; font-size:10px; font-weight:600; flex-shrink:0; }
+    .error-badge.pending { background:var(--red-bg); color:var(--red); border:1px solid var(--red-border); }
+    .error-badge.mastered { background:var(--green-bg); color:var(--green); border:1px solid var(--green-border); }
+    .error-q { font-size:13px; color:var(--text2); flex:1; }
+    .error-meta { font-size:11px; color:var(--text3); flex-shrink:0; }
+    .error-body { padding:14px; border-top:1px solid var(--border); font-size:13px; color:var(--text2); line-height:1.65; display:none; }
+    .error-body.open { display:block; }
+    .error-body strong { color:var(--text); }
+    .error-actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+
+    /* Weak Areas */
+    .weak-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border); }
+    .weak-row:last-child { border-bottom:none; }
+    .weak-name { font-size:14px; color:var(--text); }
+    .weak-sub { font-size:11px; color:var(--text3); margin-top:2px; }
+    .weak-bar-wrap { width:100px; height:6px; background:var(--border); border-radius:3px; overflow:hidden; margin:0 12px; }
+    .weak-bar { height:100%; border-radius:3px; transition:width .6s ease; }
+    .weak-bar.low { background:var(--red); }
+    .weak-bar.mid { background:var(--accent); }
+    .weak-bar.high { background:var(--green); }
+    .weak-pct { font-size:12px; color:var(--text2); min-width:34px; text-align:right; }
+
+    /* Divider / Row utils */
+    .divider { height:1px; background:var(--border); margin:14px 0; }
+    .row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .spacer { flex:1; }
+
+    /* Animations */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes spin { to{transform:rotate(360deg)} }
+
+    .footer { text-align:center; padding:20px 0; font-size:11px; color:var(--text3); }
+
+    /* Toast */
+    #toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--accent); color:#0d0f14; padding:8px 18px; border-radius:20px; font-size:13px; font-weight:500; z-index:999; pointer-events:none; transition:opacity .3s; opacity:0; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header class="site-header">
+    <div class="eyebrow">Singapore Secondary School</div>
+    <h1>Practice smarter,<br><em>score higher.</em></h1>
+    <p>AI-generated questions for Secondary 1 &amp; 2 — powered by Claude</p>
+  </header>
+
+  <!-- TABS -->
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchTab('practice')">Practice Quiz</button>
+    <button class="nav-tab" onclick="switchTab('errorbank')">
+      Error Bank <span class="tab-badge" id="error-count-badge" style="display:none">0</span>
+    </button>
+    <button class="nav-tab" onclick="switchTab('weakareas')">Weak Areas</button>
+  </div>
+
+  <!-- ══════════ PRACTICE TAB ══════════ -->
+  <div id="tab-practice">
+
+    <!-- SETUP -->
+    <div id="setup-view">
+      <div class="card">
+        <div class="card-label">Anthropic API Key</div>
+        <div class="api-row">
+          <input class="api-input" type="password" id="api-key" placeholder="sk-ant-api03-..." autocomplete="off" />
+          <button class="btn btn-ghost" onclick="saveKey()">Save</button>
+        </div>
+        <div class="api-note">Get your key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> — stored in your browser only.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Year level</div>
+        <div class="level-toggle">
+          <button class="level-btn active" id="lvl-s1" onclick="selectLevel('S1')">
+            Secondary 1 <span class="level-sub">Age 13 · Express / Normal</span>
+          </button>
+          <button class="level-btn" id="lvl-s2" onclick="selectLevel('S2')">
+            Secondary 2 <span class="level-sub">Age 14 · Express / Normal</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Subject</div>
+        <div class="subject-cards" id="subject-cards"></div>
+      </div>
+
+      <div class="card" id="topic-card" style="display:none">
+        <div class="card-label">Topic / skill area <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(select one or more, or leave as All)</span></div>
+        <div class="topic-pills" id="topic-pills"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Quiz settings</div>
+        <div class="controls">
+          <select id="num-q">
+            <option value="5">5 questions</option>
+            <option value="10" selected>10 questions</option>
+            <option value="15">15 questions</option>
+          </select>
+          <select id="diff">
+            <option value="Foundation">Foundation</option>
+            <option value="Standard" selected>Standard</option>
+            <option value="Challenging">Challenging</option>
+          </select>
+          <select id="q-type">
+            <option value="mixed" selected>Mixed types</option>
+            <option value="mcq">MCQ only</option>
+            <option value="short">Short answer only</option>
+          </select>
+          <button class="btn btn-primary" onclick="startQuiz()">Generate quiz →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOADING -->
+    <div id="loading-view" style="display:none">
+      <div class="card">
+        <div class="loading-state">
+          <div class="spinner"></div>
+          <div class="loading-label" id="loading-msg">Generating questions with Claude…</div>
+          <div class="loading-sub">About 10–15 seconds</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="quiz-view" style="display:none">
+      <div class="card">
+        <div class="progress-wrap">
+          <div class="progress-meta">
+            <span id="q-num">Question 1 of 10</span>
+            <span id="score-live">Score: 0/0</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="progress" style="width:0%"></div></div>
+        </div>
+        <div id="q-topic-badge" class="q-topic-badge" style="display:none"></div>
+        <div class="question-text" id="q-text"></div>
+        <div id="q-body"></div>
+        <div id="feedback-box"></div>
+        <div class="nav-row">
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" id="explain-btn" onclick="explainCurrent()" style="display:none">Deep explain</button>
+            <button class="btn btn-ghost btn-sm" id="add-bank-btn" onclick="manualAddToBank()" style="display:none">+ Error Bank</button>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" id="next-btn" onclick="nextQuestion()" style="display:none">Next →</button>
+            <button class="btn btn-primary btn-sm" id="submit-btn" onclick="submitAnswer()">Submit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="result-view" style="display:none">
+      <div class="card">
+        <div class="result-hero">
+          <div class="result-pct" id="final-pct">—</div>
+          <div class="result-grade" id="final-grade">—</div>
+          <div class="result-breakdown">
+            <div class="rb-item"><div class="rb-val" id="r-correct">—</div><div class="rb-lbl">Correct</div></div>
+            <div class="rb-item"><div class="rb-val" id="r-wrong">—</div><div class="rb-lbl">Wrong</div></div>
+            <div class="rb-item"><div class="rb-val" id="r-total">—</div><div class="rb-lbl">Total</div></div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="startQuiz()">New quiz</button>
+            <button class="btn btn-ghost" onclick="showPracticeSetup()">Change subject</button>
+            <button class="btn btn-ghost" onclick="switchTab('errorbank')">View Error Bank</button>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:4px">
+        <div class="card-label" style="padding:0 4px 10px">Review answers</div>
+        <div id="review-list"></div>
+      </div>
+    </div>
+
+  </div><!-- /tab-practice -->
+
+
+  <!-- ══════════ ERROR BANK TAB ══════════ -->
+  <div id="tab-errorbank" style="display:none">
+    <div class="card">
+      <div class="row">
+        <div class="card-label" style="margin:0">My Error Bank</div>
+        <div class="spacer"></div>
+        <button class="btn btn-primary btn-sm" onclick="practiceErrorBank()" id="practice-errors-btn" disabled>Practice errors →</button>
+        <button class="btn btn-danger btn-sm" onclick="clearErrorBank()">Clear all</button>
+      </div>
+      <div class="divider"></div>
+      <div class="stats-grid" id="error-stats"></div>
+      <div class="filter-row" id="error-filter"></div>
+      <div id="error-list"></div>
+    </div>
+  </div>
+
+
+  <!-- ══════════ WEAK AREAS TAB ══════════ -->
+  <div id="tab-weakareas" style="display:none">
+    <div class="card">
+      <div class="card-label">Performance by topic</div>
+      <div id="weak-topic-list">
+        <div class="empty-state"><div class="big">No data yet</div>Complete some quizzes to track your weak areas.</div>
+      </div>
+    </div>
+    <div class="card" id="weak-practice-card" style="display:none">
+      <div class="card-label">Practice your weak areas</div>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px">Generate a quiz targeting your lowest-scoring topics.</p>
+      <div class="controls">
+        <select id="weak-num-q">
+          <option value="5">5 questions</option>
+          <option value="10" selected>10 questions</option>
+        </select>
+        <button class="btn btn-primary" onclick="practiceWeakAreas()">Practice weak areas →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">Singapore Secondary Prep · Powered by Claude AI</div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════
+   SUBJECTS & TOPICS DATA
+═══════════════════════════════════ */
+const SUBJECTS = [
+  {
+    id:'math', name:'Mathematics', desc:'Algebra, geometry, statistics & more',
+    topics:['Whole Numbers & Integers','Fractions & Decimals','Ratio & Proportion','Percentages','Algebra – Expressions','Algebra – Equations & Inequalities','Geometry – Angles & Lines','Geometry – Triangles & Polygons','Perimeter, Area & Volume','Statistics & Data Handling','Graphs & Functions','Number Patterns & Sequences']
+  },
+  {
+    id:'chem', name:'Chemistry', desc:'Matter, atoms, reactions, periodic table',
+    topics:['Measurement & Scientific Units','States of Matter & Kinetic Theory','Atomic Structure','The Periodic Table','Chemical Bonding','Chemical Formulae & Naming','Chemical Equations & Balancing','Acids, Bases & Salts','Oxidation & Reduction','Separation Techniques','Metals & Reactivity Series','Air, Atmosphere & Environment']
+  },
+  {
+    id:'phys', name:'Physics', desc:'Forces, energy, waves, electricity',
+    topics:['Measurement & Scientific Units','Kinematics – Speed & Velocity','Forces & Newton\'s Laws','Work, Energy & Power','Pressure & Density','Heat & Temperature','Transfer of Thermal Energy','Light & Optics','Sound & Waves','Electricity – Circuits & Ohm\'s Law','Magnetism & Electromagnetism','Simple Machines & Moments']
+  },
+  {
+    id:'eng', name:'English Language', desc:'Grammar, vocabulary, writing & comprehension',
+    topics:['Vocabulary – Word Meaning in Context','Vocabulary – Synonyms & Antonyms','Vocabulary – Phrasal Verbs & Idioms','Grammar – Tenses (Simple, Perfect, Continuous)','Grammar – Subject-Verb Agreement','Grammar – Articles & Determiners','Grammar – Prepositions','Grammar – Conjunctions & Sentence Structure','Grammar – Active & Passive Voice','Reading Comprehension Skills','Summary Writing','Editing & Error Correction','Situational Writing (Emails, Letters, Reports)','Continuous Writing – Narrative','Continuous Writing – Expository & Argumentative']
+  }
+];
+
+/* ═══════════════════════════════════
+   STATE
+═══════════════════════════════════ */
+let apiKey         = localStorage.getItem('sg_quiz_apikey') || '';
+let selectedLevel  = 'S1';
+let selectedSubject = null;
+let selectedTopics = [];
+let questions      = [];
+let current        = 0;
+let answers        = [];
+let results        = [];
+let score          = 0;
+let ebFilter       = 'all';
+
+/* ═══════════════════════════════════
+   LOCAL STORAGE HELPERS
+═══════════════════════════════════ */
+function loadBank()      { try { return JSON.parse(localStorage.getItem('sg_errorbank') || '[]'); } catch(e) { return []; } }
+function saveBank(b)     { localStorage.setItem('sg_errorbank', JSON.stringify(b)); updateBadge(); }
+function loadPerf()      { try { return JSON.parse(localStorage.getItem('sg_perf') || '{}'); } catch(e) { return {}; } }
+function savePerf(p)     { localStorage.setItem('sg_perf', JSON.stringify(p)); }
+
+function updateBadge() {
+  const n = loadBank().filter(e => !e.mastered).length;
+  const b = document.getElementById('error-count-badge');
+  b.textContent = n; b.style.display = n > 0 ? '' : 'none';
+}
+
+function recordPerf(topic, subjectName, isCorrect) {
+  const p = loadPerf();
+  const key = subjectName + '||' + topic;
+  if (!p[key]) p[key] = { topic, subject:subjectName, correct:0, total:0 };
+  p[key].total++; if (isCorrect) p[key].correct++;
+  savePerf(p);
+}
+
+function autoAddError(q, userAnswer) {
+  const bank = loadBank();
+  if (bank.find(e => e.question === q.question)) return;
+  bank.push({
+    id: Date.now() + Math.random(),
+    question: q.question, type: q.type, options: q.options,
+    answer: q.answer, explanation: q.explanation,
+    topic: q.topic || '—',
+    subject: q._subject || '', subjectName: q._subjectName || '',
+    level: q._level || '',
+    userAnswer, addedAt: new Date().toISOString(),
+    mastered: false, attempts: 0
+  });
+  saveBank(bank);
+}
+
+/* ═══════════════════════════════════
+   INIT
+═══════════════════════════════════ */
+function init() {
+  if (apiKey) document.getElementById('api-key').value = apiKey;
+  buildSubjectCards();
+  updateBadge();
+}
+
+/* ═══════════════════════════════════
+   TABS
+═══════════════════════════════════ */
+function switchTab(tab) {
+  ['practice','errorbank','weakareas'].forEach(t => {
+    document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-tab').forEach((el, i) => {
+    el.classList.toggle('active', ['practice','errorbank','weakareas'][i] === tab);
+  });
+  if (tab === 'errorbank') renderErrorBank();
+  if (tab === 'weakareas') renderWeakAreas();
+}
+
+/* ═══════════════════════════════════
+   SETUP
+═══════════════════════════════════ */
+function saveKey() {
+  apiKey = document.getElementById('api-key').value.trim();
+  if (apiKey) {
+    localStorage.setItem('sg_quiz_apikey', apiKey);
+    const btn = document.querySelector('[onclick="saveKey()"]');
+    btn.textContent = 'Saved ✓';
+    setTimeout(() => btn.textContent = 'Save', 2200);
+  }
+}
+
+function selectLevel(lvl) {
+  selectedLevel = lvl;
+  document.getElementById('lvl-s1').classList.toggle('active', lvl === 'S1');
+  document.getElementById('lvl-s2').classList.toggle('active', lvl === 'S2');
+}
+
+function buildSubjectCards() {
+  const container = document.getElementById('subject-cards');
+  container.innerHTML = '';
+  SUBJECTS.forEach(s => {
+    const div = document.createElement('div');
+    div.className = 'subject-card'; div.dataset.id = s.id;
+    div.innerHTML = `<div class="subject-card-name">${s.name}</div><div class="subject-card-desc">${s.desc}</div>`;
+    div.addEventListener('click', () => selectSubject(s.id));
+    container.appendChild(div);
+  });
+}
+
+function selectSubject(id) {
+  selectedSubject = SUBJECTS.find(s => s.id === id);
+  selectedTopics = [];
+  document.querySelectorAll('.subject-card').forEach(c => c.classList.toggle('active', c.dataset.id === id));
+  buildTopicPills();
+}
+
+function buildTopicPills() {
+  const card = document.getElementById('topic-card');
+  const pills = document.getElementById('topic-pills');
+  card.style.display = ''; pills.innerHTML = '';
+
+  const allPill = makePill('All topics', true, () => {
+    selectedTopics = [];
+    pills.querySelectorAll('.topic-pill').forEach(p => p.classList.remove('active'));
+    allPill.classList.add('active');
+  });
+  pills.appendChild(allPill);
+
+  selectedSubject.topics.forEach(t => {
+    const p = makePill(t, false, () => {
+      allPill.classList.remove('active');
+      const idx = selectedTopics.indexOf(t);
+      if (idx > -1) { selectedTopics.splice(idx,1); p.classList.remove('active'); }
+      else { selectedTopics.push(t); p.classList.add('active'); }
+      if (selectedTopics.length === 0) allPill.classList.add('active');
+    });
+    pills.appendChild(p);
+  });
+}
+
+function makePill(label, active, onClick) {
+  const p = document.createElement('div');
+  p.className = 'topic-pill' + (active ? ' active' : '');
+  p.textContent = label;
+  p.addEventListener('click', onClick);
+  return p;
+}
+
+/* ═══════════════════════════════════
+   VIEW HELPERS
+═══════════════════════════════════ */
+function showPracticeView(v) {
+  ['setup','loading','quiz','result'].forEach(id =>
+    document.getElementById(id + '-view').style.display = id === v ? '' : 'none');
+}
+function showPracticeSetup() { showPracticeView('setup'); switchTab('practice'); }
+
+/* ═══════════════════════════════════
+   CLAUDE API
+═══════════════════════════════════ */
+async function callClaude(prompt, maxTokens) {
+  const key = apiKey || document.getElementById('api-key').value.trim();
+  if (!key) throw new Error('Please enter and save your Anthropic API key first.');
+  apiKey = key; localStorage.setItem('sg_quiz_apikey', key);
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{
+      'Content-Type':'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens: maxTokens || 3500, messages:[{ role:'user', content: prompt }] })
+  });
+  const data = await res.json();
+  if (data.error) throw new Error(data.error.message);
+  return data.content[0].text;
+}
+
+/* ═══════════════════════════════════
+   START QUIZ (normal or override)
+═══════════════════════════════════ */
+async function startQuiz(override) {
+  if (!override && !selectedSubject) { alert('Please select a subject.'); return; }
+
+  questions = []; current = 0; answers = []; results = []; score = 0;
+  switchTab('practice');
+  showPracticeView('loading');
+
+  const numQ   = override?.numQ   || document.getElementById('num-q').value;
+  const diff   = override?.diff   || document.getElementById('diff').value;
+  const qType  = override?.qType  || document.getElementById('q-type').value;
+  const subj   = override?.subject || selectedSubject;
+  const lvl    = override?.level  || selectedLevel;
+  const topics = override?.topics || selectedTopics;
+
+  const topicLine = topics.length > 0
+    ? `Focus ONLY on these specific topics: ${topics.join(', ')}.`
+    : `Cover a variety of topics from the ${subj.name} ${lvl} syllabus.`;
+
+  const typeRule = qType === 'mcq' ? 'All questions must be type "mcq".'
+                 : qType === 'short' ? 'All questions must be type "short_answer".'
+                 : 'Mix mcq and short_answer roughly equally.';
+
+  const prompt = `You are an experienced Singapore MOE secondary school teacher creating a ${diff}-level practice quiz.
+Subject: Singapore ${lvl} ${subj.name}
+${topicLine}
+Number of questions: exactly ${numQ}
+${typeRule}
+
+Each question MUST include a "topic" field (the specific topic or skill being tested).
+
+Return ONLY valid JSON with no preamble or markdown:
+{
+  "questions": [
+    {
+      "id": 1,
+      "type": "mcq",
+      "topic": "Specific topic name",
+      "question": "Full question text here.",
+      "options": ["A. First option", "B. Second option", "C. Third option", "D. Fourth option"],
+      "answer": "B",
+      "explanation": "Clear explanation of why B is correct and the others are not."
+    },
+    {
+      "id": 2,
+      "type": "short_answer",
+      "topic": "Specific topic name",
+      "question": "Full question text here.",
+      "options": null,
+      "answer": "Key points: point one; point two; point three.",
+      "explanation": "Full model answer explanation."
+    }
+  ]
+}`;
+
+  try {
+    document.getElementById('loading-msg').textContent = 'Claude is crafting your questions…';
+    const raw    = await callClaude(prompt, 3800);
+    const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    questions = parsed.questions;
+    questions.forEach(q => { q._subject = subj.id; q._subjectName = subj.name; q._level = lvl; });
+    answers = new Array(questions.length).fill(null);
+    results = new Array(questions.length).fill(null);
+    showPracticeView('quiz');
+    renderQuestion();
+  } catch(e) {
+    showPracticeView('setup');
+    alert('Error generating quiz:\n' + e.message);
+  }
+}
+
+/* ═══════════════════════════════════
+   RENDER QUESTION
+═══════════════════════════════════ */
+function renderQuestion() {
+  const q = questions[current];
+  document.getElementById('progress').style.width = (current / questions.length * 100) + '%';
+  document.getElementById('q-num').textContent  = `Question ${current + 1} of ${questions.length}`;
+  document.getElementById('q-text').textContent = q.question;
+  document.getElementById('feedback-box').innerHTML = '';
+  document.getElementById('score-live').textContent  = `Score: ${score}/${current}`;
+  document.getElementById('submit-btn').style.display  = '';
+  document.getElementById('next-btn').style.display    = 'none';
+  document.getElementById('explain-btn').style.display = 'none';
+  document.getElementById('add-bank-btn').style.display = 'none';
+
+  const badge = document.getElementById('q-topic-badge');
+  if (q.topic) { badge.textContent = q.topic; badge.style.display = ''; }
+  else badge.style.display = 'none';
+
+  const body = document.getElementById('q-body');
+  if (q.type === 'mcq') {
+    body.innerHTML = '<div class="options" id="options"></div>';
+    const letters = ['A','B','C','D'];
+    (q.options||[]).forEach((opt, i) => {
+      const div = document.createElement('div');
+      div.className = 'option'; div.dataset.letter = letters[i];
+      div.innerHTML = `<div class="option-letter">${letters[i]}</div><div class="option-text">${opt.replace(/^[A-D]\.\s*/,'')}</div>`;
+      div.addEventListener('click', () => {
+        document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+        div.classList.add('selected');
+      });
+      document.getElementById('options').appendChild(div);
+    });
+  } else {
+    body.innerHTML = `<textarea class="sa-textarea" id="sa-input" placeholder="Write your answer here…"></textarea>`;
+  }
+}
+
+/* ═══════════════════════════════════
+   SUBMIT
+═══════════════════════════════════ */
+async function submitAnswer() {
+  const q = questions[current];
+  let userAnswer = '';
+
+  if (q.type === 'mcq') {
+    const sel = document.querySelector('.option.selected');
+    if (!sel) { alert('Please select an answer.'); return; }
+    userAnswer = sel.dataset.letter;
+  } else {
+    userAnswer = document.getElementById('sa-input')?.value.trim() || '';
+    if (!userAnswer) { alert('Please write your answer.'); return; }
+  }
+
+  document.getElementById('submit-btn').style.display = 'none';
+  answers[current] = userAnswer;
+  let isCorrect = false;
+  let feedbackHtml = '';
+
+  if (q.type === 'mcq') {
+    isCorrect = userAnswer === q.answer;
+    document.querySelectorAll('.option').forEach(o => {
+      if (o.dataset.letter === q.answer)           o.classList.add('correct');
+      else if (o.dataset.letter === userAnswer && !isCorrect) o.classList.add('wrong');
+      o.style.pointerEvents = 'none';
+    });
+    feedbackHtml = makeFeedback(isCorrect, isCorrect ? 'Correct!' : `Incorrect — answer is ${q.answer}.`, q.explanation);
+
+  } else {
+    document.getElementById('feedback-box').innerHTML =
+      `<div class="feedback info"><div style="display:flex;align-items:center;gap:8px"><div class="spinner spinner-sm"></div>Checking your answer…</div></div>`;
+    try {
+      const raw   = await callClaude(`You are a Singapore secondary school teacher grading a student response.
+Question: ${q.question}
+Model answer: ${q.answer}
+Student answer: ${userAnswer}
+Respond ONLY with JSON: {"correct": true_or_false, "feedback": "1-2 sentences of teacher feedback"}`, 300);
+      const grade = JSON.parse(raw.replace(/```json|```/g,'').trim());
+      isCorrect   = grade.correct;
+      feedbackHtml = makeFeedback(isCorrect, isCorrect ? 'Good answer!' : 'Needs improvement.',
+        grade.feedback + `<br><br><strong>Model answer:</strong> ${q.answer}`);
+    } catch(e) {
+      feedbackHtml = makeFeedback(false, 'Could not auto-grade.', `Model answer: ${q.answer}`);
+    }
+  }
+
+  if (isCorrect) score++;
+  results[current] = { q, userAnswer, isCorrect };
+
+  // Track performance
+  if (q.topic) recordPerf(q.topic, q._subjectName || q._subject, isCorrect);
+
+  // Auto-add wrong answers to error bank
+  if (!isCorrect) {
+    autoAddError(q, userAnswer);
+    showToast('Added to Error Bank');
+  }
+
+  document.getElementById('feedback-box').innerHTML = feedbackHtml;
+  document.getElementById('next-btn').style.display    = '';
+  document.getElementById('explain-btn').style.display = '';
+  if (isCorrect) document.getElementById('add-bank-btn').style.display = '';
+  document.getElementById('score-live').textContent = `Score: ${score}/${current + 1}`;
+}
+
+function makeFeedback(ok, title, body) {
+  return `<div class="feedback ${ok ? 'correct' : 'wrong'}">
+    <div class="feedback-title">${ok ? '✓' : '✗'} ${title}</div>
+    <div class="feedback-body">${body}</div>
+  </div>`;
+}
+
+function manualAddToBank() {
+  const q = questions[current];
+  const r = results[current];
+  autoAddError(q, r?.userAnswer || '');
+  document.getElementById('add-bank-btn').style.display = 'none';
+  showToast('Added to Error Bank');
+}
+
+/* ═══════════════════════════════════
+   EXPLAIN
+═══════════════════════════════════ */
+async function explainCurrent() {
+  const q = questions[current];
+  const btn = document.getElementById('explain-btn');
+  btn.disabled = true; btn.textContent = 'Loading…';
+  try {
+    const text = await callClaude(`You are a Singapore secondary school teacher.
+A student got this question ${results[current]?.isCorrect ? 'correct' : 'wrong'}.
+Question: ${q.question}
+Correct answer: ${q.answer}
+Topic: ${q.topic || 'general'}
+Give a clear 4-5 sentence explanation that builds deep understanding. Focus on the concept and why, not just the answer.`, 600);
+    document.getElementById('feedback-box').innerHTML +=
+      `<div class="feedback blue" style="margin-top:10px">
+        <div class="feedback-title">📖 Deep explanation</div>
+        <div class="feedback-body">${text}</div>
+      </div>`;
+  } catch(e) {}
+  btn.disabled = false; btn.textContent = 'Deep explain';
+}
+
+/* ═══════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════ */
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) showResults();
+  else renderQuestion();
+}
+
+/* ═══════════════════════════════════
+   RESULTS
+═══════════════════════════════════ */
+function showResults() {
+  showPracticeView('result');
+  document.getElementById('progress').style.width = '100%';
+  const pct   = Math.round(score / questions.length * 100);
+  const grade = pct >= 75 ? 'Excellent — keep it up!'
+              : pct >= 60 ? 'Good — solid work.'
+              : pct >= 45 ? 'Pass — review your errors.'
+              : 'Below pass — practise your error bank!';
+  document.getElementById('final-pct').textContent   = pct + '%';
+  document.getElementById('final-grade').textContent = `${score} of ${questions.length} correct — ${grade}`;
+  document.getElementById('r-correct').textContent   = score;
+  document.getElementById('r-wrong').textContent     = questions.length - score;
+  document.getElementById('r-total').textContent     = questions.length;
+
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+  results.forEach((r, i) => {
+    if (!r) return;
+    const item = document.createElement('div');
+    item.className = 'review-item';
+    const preview = r.q.question.length > 70 ? r.q.question.slice(0,70) + '…' : r.q.question;
+    item.innerHTML = `
+      <div class="review-header" onclick="this.nextElementSibling.classList.toggle('open')">
+        <div class="review-dot ${r.isCorrect ? 'correct' : 'wrong'}"></div>
+        <div class="review-q">${i+1}. ${preview}</div>
+        <span style="color:var(--text3);font-size:12px">▾</span>
+      </div>
+      <div class="review-body">
+        <strong>Topic:</strong> ${r.q.topic || '—'}<br>
+        <strong>Your answer:</strong> ${r.userAnswer}<br>
+        <strong>Correct answer:</strong> ${r.q.answer}<br>
+        <strong>Explanation:</strong> ${r.q.explanation}
+      </div>`;
+    list.appendChild(item);
+  });
+  updateBadge();
+}
+
+/* ═══════════════════════════════════
+   ERROR BANK RENDER
+═══════════════════════════════════ */
+function renderErrorBank() {
+  const bank    = loadBank();
+  const statsEl = document.getElementById('error-stats');
+  const filterEl = document.getElementById('error-filter');
+  const listEl   = document.getElementById('error-list');
+  const practiceBtn = document.getElementById('practice-errors-btn');
+
+  const total    = bank.length;
+  const mastered = bank.filter(e => e.mastered).length;
+  const pending  = total - mastered;
+
+  statsEl.innerHTML = `
+    <div class="stat-item"><div class="stat-val">${total}</div><div class="stat-lbl">Total</div></div>
+    <div class="stat-item"><div class="stat-val" style="color:var(--red)">${pending}</div><div class="stat-lbl">Pending</div></div>
+    <div class="stat-item"><div class="stat-val" style="color:var(--green)">${mastered}</div><div class="stat-lbl">Mastered</div></div>`;
+
+  if (total === 0) {
+    filterEl.innerHTML = '';
+    listEl.innerHTML = '<div class="empty-state"><div class="big">Bank is empty</div>Wrong answers are automatically saved here when you quiz.</div>';
+    practiceBtn.disabled = true;
+    return;
+  }
+  practiceBtn.disabled = false;
+
+  // Build subject filters
+  const subjIds = [...new Set(bank.map(e => e.subject))];
+  const filterDefs = [
+    { val:'all', label:'All' },
+    { val:'pending', label:'Pending' },
+    { val:'mastered', label:'Mastered' },
+    ...subjIds.map(id => ({ val:'s:'+id, label: SUBJECTS.find(s=>s.id===id)?.name || id }))
+  ];
+  filterEl.innerHTML = '';
+  filterDefs.forEach(f => {
+    const p = document.createElement('div');
+    p.className = 'filter-pill' + (ebFilter === f.val ? ' active' : '');
+    p.textContent = f.label;
+    p.onclick = () => { ebFilter = f.val; renderErrorBank(); };
+    filterEl.appendChild(p);
+  });
+
+  // Filter
+  let entries = bank.slice().reverse();
+  if (ebFilter === 'pending')  entries = entries.filter(e => !e.mastered);
+  if (ebFilter === 'mastered') entries = entries.filter(e => e.mastered);
+  if (ebFilter.startsWith('s:')) entries = entries.filter(e => e.subject === ebFilter.slice(2));
+
+  listEl.innerHTML = '';
+  entries.forEach(entry => {
+    const dateStr = entry.addedAt ? new Date(entry.addedAt).toLocaleDateString('en-SG',{day:'numeric',month:'short'}) : '';
+    const preview = entry.question.length > 65 ? entry.question.slice(0,65)+'…' : entry.question;
+    const div = document.createElement('div');
+    div.className = 'error-entry';
+    div.innerHTML = `
+      <div class="error-entry-header" onclick="this.nextElementSibling.classList.toggle('open')">
+        <span class="error-badge ${entry.mastered ? 'mastered' : 'pending'}">${entry.mastered ? 'Mastered' : 'Pending'}</span>
+        <div class="error-q">${preview}</div>
+        <div class="error-meta">${entry.subjectName || entry.subject} · ${dateStr}</div>
+      </div>
+      <div class="error-body">
+        <strong>Topic:</strong> ${entry.topic || '—'}<br>
+        <strong>Your answer:</strong> ${entry.userAnswer || '—'}<br>
+        <strong>Correct answer:</strong> ${entry.answer}<br>
+        <strong>Explanation:</strong> ${entry.explanation}
+        <div class="error-actions">
+          <button class="btn btn-ghost btn-sm" onclick="toggleMastered('${entry.id}')">${entry.mastered ? 'Unmark mastered' : '✓ Mark mastered'}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteError('${entry.id}')">Delete</button>
+        </div>
+      </div>`;
+    listEl.appendChild(div);
+  });
+}
+
+function toggleMastered(id) {
+  const bank = loadBank();
+  const e = bank.find(x => String(x.id) === String(id));
+  if (e) { e.mastered = !e.mastered; e.attempts = (e.attempts||0) + 1; }
+  saveBank(bank); renderErrorBank();
+}
+function deleteError(id) {
+  if (!confirm('Remove this item from the error bank?')) return;
+  saveBank(loadBank().filter(x => String(x.id) !== String(id)));
+  renderErrorBank();
+}
+function clearErrorBank() {
+  if (!confirm('Clear the entire error bank? This cannot be undone.')) return;
+  saveBank([]); renderErrorBank();
+}
+
+/* ═══════════════════════════════════
+   PRACTICE ERROR BANK
+═══════════════════════════════════ */
+async function practiceErrorBank() {
+  const bank = loadBank().filter(e => !e.mastered);
+  if (bank.length === 0) { alert('No pending errors! Great job — all marked as mastered.'); return; }
+
+  const sample = bank.sort(() => Math.random()-.5).slice(0, Math.min(10, bank.length));
+  switchTab('practice');
+  showPracticeView('loading');
+  document.getElementById('loading-msg').textContent = 'Generating new practice questions from your errors…';
+
+  const summary = sample.map((e,i) => `${i+1}. Subject: ${e.subjectName||e.subject} | Topic: ${e.topic} | Original Q: ${e.question} | Your wrong answer: ${e.userAnswer} | Correct: ${e.answer}`).join('\n');
+
+  const prompt = `You are a Singapore secondary school teacher. This student got these questions WRONG:
+
+${summary}
+
+Create ${sample.length} NEW practice questions (different wording, same concepts) to help this student master their weak areas. Vary between mcq and short_answer types.
+
+Return ONLY valid JSON:
+{
+  "questions": [
+    { "id":1, "type":"mcq", "topic":"Topic", "question":"...", "options":["A. ..","B. ..","C. ..","D. .."], "answer":"B", "explanation":"..." },
+    { "id":2, "type":"short_answer", "topic":"Topic", "question":"...", "options":null, "answer":"Key points...", "explanation":"..." }
+  ]
+}`;
+
+  try {
+    const raw    = await callClaude(prompt, 3200);
+    const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    questions = parsed.questions;
+    const refSubj = SUBJECTS.find(s => s.id === (sample[0].subject || 'math')) || SUBJECTS[0];
+    questions.forEach(q => { q._subject = sample[0].subject; q._subjectName = sample[0].subjectName || refSubj.name; q._level = sample[0].level || selectedLevel; });
+    current = 0; answers = new Array(questions.length).fill(null); results = new Array(questions.length).fill(null); score = 0;
+    showPracticeView('quiz');
+    renderQuestion();
+  } catch(e) {
+    showPracticeSetup();
+    alert('Error: ' + e.message);
+  }
+}
+
+/* ═══════════════════════════════════
+   WEAK AREAS
+═══════════════════════════════════ */
+function renderWeakAreas() {
+  const perf  = loadPerf();
+  const keys  = Object.keys(perf);
+  const listEl = document.getElementById('weak-topic-list');
+  const cardEl = document.getElementById('weak-practice-card');
+
+  if (keys.length === 0) {
+    listEl.innerHTML = '<div class="empty-state"><div class="big">No data yet</div>Complete quizzes to see performance by topic.</div>';
+    cardEl.style.display = 'none';
+    return;
+  }
+
+  cardEl.style.display = '';
+  const entries = keys.map(k => perf[k]).sort((a,b) => (a.correct/a.total) - (b.correct/b.total));
+
+  listEl.innerHTML = '';
+  entries.forEach(e => {
+    const pct = Math.round(e.correct / e.total * 100);
+    const barClass = pct >= 70 ? 'high' : pct >= 50 ? 'mid' : 'low';
+    const row = document.createElement('div');
+    row.className = 'weak-row';
+    row.innerHTML = `
+      <div style="flex:1">
+        <div class="weak-name">${e.topic}</div>
+        <div class="weak-sub">${e.subject} · ${e.total} attempt${e.total!==1?'s':''}</div>
+      </div>
+      <div class="weak-bar-wrap"><div class="weak-bar ${barClass}" style="width:${pct}%"></div></div>
+      <div class="weak-pct">${pct}%</div>`;
+    listEl.appendChild(row);
+  });
+}
+
+async function practiceWeakAreas() {
+  const perf  = loadPerf();
+  const weak  = Object.values(perf).sort((a,b) => (a.correct/a.total)-(b.correct/b.total)).filter(e => (e.correct/e.total) < 0.7).slice(0,5);
+  if (weak.length === 0) { alert('No weak areas found — your scores are all 70%+! Keep going.'); return; }
+
+  // Find matching subject
+  const subjName = weak[0].subject;
+  const subj = SUBJECTS.find(s => s.name === subjName) || selectedSubject || SUBJECTS[0];
+  const numQ = document.getElementById('weak-num-q').value;
+
+  await startQuiz({ numQ, diff:'Standard', qType:'mixed', subject: subj, level: selectedLevel, topics: weak.map(w => w.topic) });
+}
+
+/* ═══════════════════════════════════
+   TOAST
+═══════════════════════════════════ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.opacity = '1';
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.style.opacity = '0', 2000);
+}
+
+/* ═══════════════════════════════════
+   BOOT
+═══════════════════════════════════ */
+init();
+</script>
+</body>
+</html>
