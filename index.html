@@ -28,7 +28,7 @@
       background-image:linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
       background-size:40px 40px;
     }
-    .page { position:relative; z-index:1; max-width:700px; margin:0 auto; padding:0 20px 60px; }
+    .page { position:relative; z-index:1; max-width:860px; margin:0 auto; padding:0 28px 60px; }
 
     /* ── User Select ── */
     #user-select-screen { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px; }
@@ -73,7 +73,7 @@
     .tab-badge { display:inline-block; margin-left:5px; padding:1px 6px; border-radius:10px; font-size:10px; font-weight:600; background:var(--red-bg); color:var(--red); border:1px solid var(--red-border); }
 
     /* ── Card ── */
-    .card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:22px; margin-bottom:12px; animation:fadeUp .5s ease both; }
+    .card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:28px; margin-bottom:12px; animation:fadeUp .5s ease both; }
     .card-label { font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--text3); margin-bottom:14px; }
 
     /* ── API ── */
@@ -160,32 +160,32 @@
     .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:2px; transition:width .4s ease; }
 
     /* ── Question ── */
-    .q-topic-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; margin-bottom:12px; background:var(--blue-bg); color:var(--blue); border:1px solid var(--blue-border); }
-    .question-text { font-family:var(--font-display); font-size:18px; font-weight:400; color:var(--text); line-height:1.55; margin-bottom:18px; }
+    .q-topic-badge { display:inline-block; padding:4px 12px; border-radius:20px; font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; margin-bottom:14px; background:var(--blue-bg); color:var(--blue); border:1px solid var(--blue-border); }
+    .question-text { font-family:var(--font-display); font-size:24px; font-weight:400; color:var(--text); line-height:1.6; margin-bottom:22px; }
 
     /* ── Options ── */
-    .options { display:flex; flex-direction:column; gap:8px; }
-    .option { display:flex; align-items:flex-start; gap:12px; padding:12px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; transition:all .15s; }
+    .options { display:flex; flex-direction:column; gap:10px; }
+    .option { display:flex; align-items:flex-start; gap:14px; padding:16px 18px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; transition:all .15s; }
     .option:hover { border-color:var(--border-hi); }
     .option.selected { border-color:var(--accent-border); background:var(--accent-bg); }
     .option.correct { border-color:var(--green-border); background:var(--green-bg); }
     .option.wrong { border-color:var(--red-border); background:var(--red-bg); }
-    .option-letter { width:24px; height:24px; border-radius:50%; background:var(--border); color:var(--text2); font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; transition:all .15s; }
+    .option-letter { width:30px; height:30px; border-radius:50%; background:var(--border); color:var(--text2); font-size:13px; font-weight:600; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; transition:all .15s; }
     .option.selected .option-letter { background:var(--accent); color:#0d0f14; }
     .option.correct .option-letter { background:var(--green); color:#0d0f14; }
     .option.wrong .option-letter { background:var(--red); color:#fff; }
-    .option-text { font-size:14px; color:var(--text); line-height:1.5; }
-    .sa-textarea { width:100%; padding:12px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font-body); font-size:14px; resize:vertical; min-height:90px; outline:none; transition:border-color .2s; }
+    .option-text { font-size:17px; color:var(--text); line-height:1.55; }
+    .sa-textarea { width:100%; padding:16px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font-body); font-size:17px; resize:vertical; min-height:110px; outline:none; transition:border-color .2s; line-height:1.6; }
     .sa-textarea:focus { border-color:var(--accent-border); }
 
     /* ── Feedback ── */
-    .feedback { margin-top:12px; padding:14px; border-radius:var(--radius-sm); font-size:13px; line-height:1.65; animation:fadeUp .3s ease; }
+    .feedback { margin-top:14px; padding:16px 18px; border-radius:var(--radius-sm); font-size:15px; line-height:1.7; animation:fadeUp .3s ease; }
     .feedback.correct { background:var(--green-bg); border:1px solid var(--green-border); color:#7ed4a0; }
     .feedback.wrong { background:var(--red-bg); border:1px solid var(--red-border); color:#e08080; }
     .feedback.info { background:var(--accent-bg); border:1px solid var(--accent-border); color:var(--accent2); }
     .feedback.blue { background:var(--blue-bg); border:1px solid var(--blue-border); color:var(--blue); }
-    .feedback-title { font-weight:600; margin-bottom:4px; }
-    .feedback-body { color:var(--text2); font-size:13px; margin-top:6px; }
+    .feedback-title { font-weight:600; margin-bottom:5px; font-size:16px; }
+    .feedback-body { color:var(--text2); font-size:15px; margin-top:7px; }
 
     /* ── Quiz Nav — BIG next/back buttons ── */
     /* ── Quiz Nav ── */
@@ -280,9 +280,26 @@
 
     @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
     @keyframes spin { to{transform:rotate(360deg)} }
+
+    /* ── Answer effects ── */
+    #fx-canvas { position:fixed; inset:0; pointer-events:none; z-index:9000; }
+    /* Card flash */
+    @keyframes flashGreen { 0%,100%{box-shadow:none} 30%{box-shadow:0 0 0 4px var(--green),0 0 40px rgba(93,184,122,0.35)} }
+    @keyframes flashRed   { 0%,100%{box-shadow:none} 30%{box-shadow:0 0 0 4px var(--red),0 0 40px rgba(224,92,92,0.35)} }
+    @keyframes shakeX { 0%,100%{transform:translateX(0)} 15%{transform:translateX(-8px)} 30%{transform:translateX(8px)} 45%{transform:translateX(-6px)} 60%{transform:translateX(6px)} 75%{transform:translateX(-3px)} 90%{transform:translateX(3px)} }
+    .flash-correct { animation: flashGreen .7s ease both; }
+    .flash-wrong   { animation: flashRed .5s ease both, shakeX .5s ease both; }
+    /* Emoji burst */
+    .fx-emoji { position:fixed; font-size:32px; pointer-events:none; z-index:9001; animation: fxFloat 1.1s ease-out forwards; }
+    @keyframes fxFloat { 0%{opacity:1;transform:translateY(0) scale(1)} 70%{opacity:1} 100%{opacity:0;transform:translateY(-140px) scale(1.3)} }
+    @keyframes fxDroop { 0%{opacity:1;transform:translateY(0) scale(1)} 60%{opacity:0.8;transform:translateY(60px) scale(0.9)} 100%{opacity:0;transform:translateY(100px) scale(0.8)} }
+    /* Sad droop */
+    @keyframes droop { 0%{transform:translateY(0)} 40%{transform:translateY(6px)} 100%{transform:translateY(0)} }
+    .fx-droop { animation: droop .6s ease; }
   </style>
 </head>
 <body>
+<canvas id="fx-canvas"></canvas>
 
 <!-- USER SELECT -->
 <div id="user-select-screen">
@@ -1096,6 +1113,9 @@ Respond ONLY with JSON: {"correct":true_or_false,"feedback":"1-2 sentences of te
   if (q.topic) recordPerf(q.topic,q._subjectName||q._subject,isCorrect);
   if (!isCorrect){autoAddError(q,userAnswer);showToast('Added to your Error Bank');}
 
+  // Play answer effect
+  if (isCorrect) playCorrect(); else playWrong();
+
   document.getElementById('feedback-box').innerHTML=feedbackHtml;
   // Switch action button to Next
   const ab=document.getElementById('action-btn');
@@ -1110,6 +1130,135 @@ function makeFeedback(ok,title,body) {
     <div class="feedback-title">${ok?'✓':'✗'} ${title}</div>
     <div class="feedback-body">${body}</div>
   </div>`;
+}
+
+/* ══════════════════════════════════════════
+   ANSWER EFFECTS
+══════════════════════════════════════════ */
+function playCorrect() {
+  // 1. Flash the quiz card green
+  const card = document.querySelector('#quiz-view .card');
+  if (card) {
+    card.classList.remove('flash-correct','flash-wrong');
+    void card.offsetWidth; // reflow
+    card.classList.add('flash-correct');
+    setTimeout(() => card.classList.remove('flash-correct'), 800);
+  }
+
+  // 2. Confetti burst on canvas
+  const canvas = document.getElementById('fx-canvas');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const pieces = [];
+  const colors = ['#c9a96e','#5db87a','#6ab0e0','#e07aaa','#e8c98a','#5bbfb5','#9b8fe0'];
+  for (let i = 0; i < 110; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * 0.4,
+      vx: (Math.random() - 0.5) * 5,
+      vy: Math.random() * 3 + 1,
+      rot: Math.random() * 360,
+      rotV: (Math.random() - 0.5) * 8,
+      w: Math.random() * 10 + 5,
+      h: Math.random() * 5 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      alpha: 1
+    });
+  }
+  let frame = 0;
+  function drawConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    pieces.forEach(p => {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.07;
+      p.rot += p.rotV;
+      if (frame > 40) p.alpha = Math.max(0, p.alpha - 0.018);
+      ctx.save();
+      ctx.globalAlpha = p.alpha;
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (frame < 90) requestAnimationFrame(drawConfetti);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  drawConfetti();
+
+  // 3. Emoji burst from bottom of quiz card
+  const emojis = ['⭐','🎉','✨','👏','🌟','💫','🎊'];
+  const rect = card ? card.getBoundingClientRect() : {left: window.innerWidth/2, bottom: window.innerHeight/2, width: 0};
+  for (let i = 0; i < 7; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'fx-emoji';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left  = (rect.left + Math.random() * rect.width) + 'px';
+      el.style.top   = (rect.bottom - 40) + 'px';
+      el.style.animationDelay = '0s';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1200);
+    }, i * 80);
+  }
+}
+
+function playWrong() {
+  // 1. Shake + flash red
+  const card = document.querySelector('#quiz-view .card');
+  if (card) {
+    card.classList.remove('flash-correct','flash-wrong');
+    void card.offsetWidth;
+    card.classList.add('flash-wrong');
+    setTimeout(() => card.classList.remove('flash-wrong'), 600);
+  }
+
+  // 2. Drooping sad emojis
+  const sadEmojis = ['😢','😞','💧','😓','😔'];
+  const rect2 = card ? card.getBoundingClientRect() : {left: window.innerWidth/2, top: window.innerHeight/2, width: 0};
+  for (let i = 0; i < 4; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'fx-emoji';
+      el.textContent = sadEmojis[Math.floor(Math.random() * sadEmojis.length)];
+      el.style.left  = (rect2.left + 20 + Math.random() * (rect2.width - 40)) + 'px';
+      el.style.top   = (rect2.top + 20) + 'px';
+      el.style.fontSize = '28px';
+      // Override animation to droop down instead of float up
+      el.style.animation = 'fxDroop 1s ease-out forwards';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1100);
+    }, i * 100);
+  }
+
+  // 3. Canvas grey particles (dust/tears)
+  const canvas = document.getElementById('fx-canvas');
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  const drops = [];
+  for (let i = 0; i < 30; i++) {
+    const cx = rect2.left + Math.random() * rect2.width;
+    const cy = rect2.top  + Math.random() * 60;
+    drops.push({ x:cx, y:cy, vy: Math.random()*1.5+0.5, alpha:0.7, r: Math.random()*3+1 });
+  }
+  let f2 = 0;
+  function drawDrops() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drops.forEach(d => {
+      d.y += d.vy; d.vy += 0.05;
+      d.alpha = Math.max(0, d.alpha - 0.025);
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(106,176,224,${d.alpha})`;
+      ctx.fill();
+    });
+    f2++;
+    if (f2 < 50) requestAnimationFrame(drawDrops);
+    else ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+  drawDrops();
 }
 
 function manualAddToBank() {
