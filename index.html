@@ -3,59 +3,87 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Singapore Secondary Quiz — AI-Powered Practice</title>
+  <title>Zhu Family Quiz — AI-Powered Practice</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #0d0f14; --bg2: #13161e; --bg3: #1a1e28;
-      --border: rgba(255,255,255,0.07); --border-hi: rgba(255,255,255,0.14);
-      --text: #e8e6e0; --text2: #9b9890; --text3: #5c5a56;
-      --accent: #c9a96e; --accent2: #e8c98a;
-      --accent-bg: rgba(201,169,110,0.10); --accent-border: rgba(201,169,110,0.28);
-      --green: #5db87a; --green-bg: rgba(93,184,122,0.10); --green-border: rgba(93,184,122,0.28);
-      --red: #e05c5c; --red-bg: rgba(224,92,92,0.10); --red-border: rgba(224,92,92,0.28);
-      --blue: #6ab0e0; --blue-bg: rgba(106,176,224,0.10); --blue-border: rgba(106,176,224,0.28);
-      --purple: #9b8fe0; --purple-bg: rgba(155,143,224,0.10);
-      --font-display: 'DM Serif Display', serif; --font-body: 'DM Sans', sans-serif;
-      --radius: 12px; --radius-sm: 8px;
+      --bg:#0d0f14; --bg2:#13161e; --bg3:#1a1e28;
+      --border:rgba(255,255,255,0.07); --border-hi:rgba(255,255,255,0.14);
+      --text:#e8e6e0; --text2:#9b9890; --text3:#5c5a56;
+      --accent:#c9a96e; --accent2:#e8c98a;
+      --accent-bg:rgba(201,169,110,0.10); --accent-border:rgba(201,169,110,0.28);
+      --green:#5db87a; --green-bg:rgba(93,184,122,0.10); --green-border:rgba(93,184,122,0.28);
+      --red:#e05c5c; --red-bg:rgba(224,92,92,0.10); --red-border:rgba(224,92,92,0.28);
+      --blue:#6ab0e0; --blue-bg:rgba(106,176,224,0.10); --blue-border:rgba(106,176,224,0.28);
+      --pink:#e07aaa; --pink-bg:rgba(224,122,170,0.10); --pink-border:rgba(224,122,170,0.28);
+      --teal:#5bbfb5; --teal-bg:rgba(91,191,181,0.10); --teal-border:rgba(91,191,181,0.28);
+      --font-display:'DM Serif Display',serif; --font-body:'DM Sans',sans-serif;
+      --radius:12px; --radius-sm:8px;
     }
     body { background:var(--bg); color:var(--text); font-family:var(--font-body); font-size:15px; line-height:1.6; min-height:100vh; }
     body::before {
       content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
-      background-image: linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),
-                        linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
+      background-image:linear-gradient(rgba(255,255,255,0.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.018) 1px,transparent 1px);
       background-size:40px 40px;
     }
     .page { position:relative; z-index:1; max-width:700px; margin:0 auto; padding:0 20px 60px; }
 
-    /* Header */
-    .site-header { padding:40px 0 28px; text-align:center; animation:fadeUp .6s ease both; }
-    .eyebrow { font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
-    .site-header h1 { font-family:var(--font-display); font-size:clamp(26px,5vw,38px); font-weight:400; color:var(--text); line-height:1.15; }
-    .site-header h1 em { font-style:italic; color:var(--accent2); }
-    .site-header p { margin-top:8px; font-size:14px; color:var(--text2); }
+    /* ── User Select ── */
+    #user-select-screen { min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 20px; }
+    .user-select-header { text-align:center; margin-bottom:40px; animation:fadeUp .6s ease both; }
+    .user-select-header .eyebrow { font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+    .user-select-header h1 { font-family:var(--font-display); font-size:clamp(28px,5vw,42px); font-weight:400; line-height:1.15; }
+    .user-select-header h1 em { font-style:italic; color:var(--accent2); }
+    .user-select-header p { margin-top:10px; font-size:14px; color:var(--text2); }
+    .user-cards { display:grid; grid-template-columns:repeat(2,1fr); gap:16px; width:100%; max-width:500px; animation:fadeUp .7s ease both; }
+    @media(max-width:480px) { .user-cards { grid-template-columns:1fr; } }
+    .user-card { padding:28px 20px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); cursor:pointer; text-align:center; transition:all .2s; }
+    .user-card:hover { border-color:var(--border-hi); transform:translateY(-2px); }
+    .user-card.ziyan:hover { border-color:var(--pink-border); background:var(--pink-bg); }
+    .user-card.zonghan:hover { border-color:var(--teal-border); background:var(--teal-bg); }
+    .user-avatar { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 14px; }
+    .user-card.ziyan .user-avatar { background:var(--pink-bg); border:2px solid var(--pink-border); }
+    .user-card.zonghan .user-avatar { background:var(--teal-bg); border:2px solid var(--teal-border); }
+    .user-card-name { font-family:var(--font-display); font-size:20px; font-weight:400; color:var(--text); margin-bottom:6px; }
+    .user-card.ziyan .user-card-name { color:var(--pink); }
+    .user-card.zonghan .user-card-name { color:var(--teal); }
+    .user-card-meta { font-size:12px; color:var(--text3); }
+    .user-card-scope { margin-top:8px; font-size:11px; color:var(--text2); }
 
-    /* Nav Tabs */
+    /* ── App Header ── */
+    .site-header { padding:36px 0 24px; text-align:center; animation:fadeUp .6s ease both; }
+    .eyebrow { font-size:11px; font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--accent); margin-bottom:10px; }
+    .site-header h1 { font-family:var(--font-display); font-size:clamp(24px,4vw,34px); font-weight:400; color:var(--text); line-height:1.15; }
+    .site-header h1 em { font-style:italic; color:var(--accent2); }
+    .site-header p { margin-top:6px; font-size:14px; color:var(--text2); }
+    .user-switcher { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:12px; }
+    .user-chip { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:500; cursor:pointer; border:1px solid var(--border); background:var(--bg3); color:var(--text2); transition:all .15s; }
+    .user-chip:hover { border-color:var(--border-hi); color:var(--text); }
+    .user-chip .dot { width:8px; height:8px; border-radius:50%; }
+    .user-chip.ziyan .dot { background:var(--pink); }
+    .user-chip.zonghan .dot { background:var(--teal); }
+
+    /* ── Nav Tabs ── */
     .nav-tabs { display:flex; gap:4px; margin-bottom:16px; background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:4px; animation:fadeUp .4s ease both; }
     .nav-tab { flex:1; padding:9px 12px; border:none; border-radius:var(--radius-sm); background:transparent; color:var(--text2); font-family:var(--font-body); font-size:13px; font-weight:500; cursor:pointer; transition:all .15s; text-align:center; }
     .nav-tab:hover { color:var(--text); }
     .nav-tab.active { background:var(--bg3); color:var(--text); border:1px solid var(--border-hi); }
     .tab-badge { display:inline-block; margin-left:5px; padding:1px 6px; border-radius:10px; font-size:10px; font-weight:600; background:var(--red-bg); color:var(--red); border:1px solid var(--red-border); }
 
-    /* Card */
+    /* ── Card ── */
     .card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--radius); padding:22px; margin-bottom:12px; animation:fadeUp .5s ease both; }
     .card-label { font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--text3); margin-bottom:14px; }
 
-    /* API */
+    /* ── API ── */
     .api-row { display:flex; gap:8px; }
     .api-input { flex:1; padding:9px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:'Courier New',monospace; font-size:12px; outline:none; transition:border-color .2s; }
     .api-input:focus { border-color:var(--accent-border); }
     .api-note { font-size:11px; color:var(--text3); margin-top:7px; }
     .api-note a { color:var(--accent); text-decoration:none; }
 
-    /* Level Toggle */
+    /* ── Level Toggle ── */
     .level-toggle { display:flex; gap:8px; }
     .level-btn { flex:1; padding:14px 10px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text2); font-family:var(--font-body); font-size:14px; font-weight:500; cursor:pointer; text-align:center; transition:all .2s; }
     .level-btn:hover { border-color:var(--border-hi); color:var(--text); }
@@ -63,29 +91,42 @@
     .level-btn .level-sub { display:block; font-size:11px; font-weight:400; color:var(--text3); margin-top:3px; }
     .level-btn.active .level-sub { color:var(--accent); }
 
-    /* Subject Cards */
+    /* ── Subject Cards ── */
     .subject-cards { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
     @media(max-width:480px) { .subject-cards { grid-template-columns:1fr; } }
     .subject-card { padding:14px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; transition:all .18s; }
     .subject-card:hover { border-color:var(--border-hi); }
     .subject-card.active { border-color:var(--accent-border); background:var(--accent-bg); }
-    .subject-card-name { font-size:14px; font-weight:500; color:var(--text); margin-bottom:4px; }
+    .subject-card-name { font-size:14px; font-weight:500; color:var(--text); margin-bottom:3px; }
     .subject-card.active .subject-card-name { color:var(--accent2); }
-    .subject-card-desc { font-size:11px; color:var(--text3); }
+    .subject-card-desc { font-size:11px; color:var(--text3); margin-bottom:0; }
     .subject-card.active .subject-card-desc { color:var(--accent); opacity:.8; }
 
-    /* Topic Pills */
+    /* ── Subject Example Preview ── */
+    .subject-examples { margin-top:16px; padding:16px; background:var(--bg3); border:1px solid var(--accent-border); border-radius:var(--radius-sm); animation:fadeUp .3s ease both; }
+    .subject-examples-label { font-size:10px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+    .example-q { margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+    .example-q:last-child { margin-bottom:0; padding-bottom:0; border-bottom:none; }
+    .example-q-text { font-size:13px; color:var(--text); margin-bottom:6px; line-height:1.5; }
+    .example-q-type { display:inline-block; padding:1px 7px; border-radius:10px; font-size:10px; font-weight:600; margin-bottom:6px; }
+    .example-q-type.mcq { background:var(--blue-bg); color:var(--blue); border:1px solid var(--blue-border); }
+    .example-q-type.short { background:var(--teal-bg); color:var(--teal); border:1px solid var(--teal-border); }
+    .example-options { display:flex; flex-direction:column; gap:4px; }
+    .example-option { font-size:12px; color:var(--text3); padding:3px 0; }
+    .example-option.correct-opt { color:var(--green); font-weight:500; }
+
+    /* ── Topic Pills ── */
     .topic-pills { display:flex; flex-wrap:wrap; gap:7px; }
     .topic-pill { padding:6px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:20px; color:var(--text2); font-size:12px; cursor:pointer; transition:all .15s; }
     .topic-pill:hover { border-color:var(--border-hi); color:var(--text); }
     .topic-pill.active { border-color:var(--accent-border); background:var(--accent-bg); color:var(--accent2); }
 
-    /* Controls */
+    /* ── Controls ── */
     .controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
     select { padding:8px 12px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font-body); font-size:13px; cursor:pointer; outline:none; transition:border-color .2s; }
     select:focus { border-color:var(--accent-border); }
 
-    /* Buttons */
+    /* ── Buttons ── */
     .btn { padding:9px 20px; border-radius:var(--radius-sm); border:none; font-family:var(--font-body); font-size:13px; font-weight:500; cursor:pointer; transition:all .15s; white-space:nowrap; }
     .btn:disabled { opacity:.4; cursor:not-allowed; }
     .btn-primary { background:var(--accent); color:#0d0f14; }
@@ -96,17 +137,17 @@
     .btn-danger:hover:not(:disabled) { background:var(--red-bg); }
     .btn-sm { padding:6px 14px; font-size:12px; }
 
-    /* Progress */
+    /* ── Progress ── */
     .progress-wrap { margin-bottom:20px; }
     .progress-meta { display:flex; justify-content:space-between; font-size:11px; color:var(--text3); margin-bottom:6px; }
     .progress-bar { height:3px; background:var(--border); border-radius:2px; overflow:hidden; }
     .progress-fill { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent2)); border-radius:2px; transition:width .4s ease; }
 
-    /* Question */
+    /* ── Question ── */
     .q-topic-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; margin-bottom:12px; background:var(--blue-bg); color:var(--blue); border:1px solid var(--blue-border); }
     .question-text { font-family:var(--font-display); font-size:18px; font-weight:400; color:var(--text); line-height:1.55; margin-bottom:18px; }
 
-    /* Options */
+    /* ── Options ── */
     .options { display:flex; flex-direction:column; gap:8px; }
     .option { display:flex; align-items:flex-start; gap:12px; padding:12px 14px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); cursor:pointer; transition:all .15s; }
     .option:hover { border-color:var(--border-hi); }
@@ -121,7 +162,7 @@
     .sa-textarea { width:100%; padding:12px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:var(--font-body); font-size:14px; resize:vertical; min-height:90px; outline:none; transition:border-color .2s; }
     .sa-textarea:focus { border-color:var(--accent-border); }
 
-    /* Feedback */
+    /* ── Feedback ── */
     .feedback { margin-top:12px; padding:14px; border-radius:var(--radius-sm); font-size:13px; line-height:1.65; animation:fadeUp .3s ease; }
     .feedback.correct { background:var(--green-bg); border:1px solid var(--green-border); color:#7ed4a0; }
     .feedback.wrong { background:var(--red-bg); border:1px solid var(--red-border); color:#e08080; }
@@ -130,17 +171,38 @@
     .feedback-title { font-weight:600; margin-bottom:4px; }
     .feedback-body { color:var(--text2); font-size:13px; margin-top:6px; }
 
-    /* Nav Row */
-    .nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:18px; gap:10px; flex-wrap:wrap; }
+    /* ── Quiz Nav — BIG next/back buttons ── */
+    .quiz-nav { margin-top:20px; }
+    /* Big full-width next button (shown after answering) */
+    .btn-next-big {
+      width:100%; padding:16px 24px; border-radius:var(--radius-sm); border:none;
+      background:var(--accent); color:#0d0f14;
+      font-family:var(--font-body); font-size:16px; font-weight:600;
+      cursor:pointer; transition:all .2s; display:none;
+      letter-spacing:.01em;
+    }
+    .btn-next-big:hover { background:var(--accent2); transform:translateY(-1px); }
+    .btn-next-big:active { transform:translateY(0); }
+    /* Small row: back + secondary actions */
+    .quiz-nav-row { display:flex; justify-content:space-between; align-items:center; margin-top:10px; gap:8px; flex-wrap:wrap; }
+    .quiz-nav-left { display:flex; gap:8px; align-items:center; }
+    .quiz-nav-right { display:flex; gap:8px; align-items:center; }
+    /* Back button */
+    .btn-back { display:flex; align-items:center; gap:5px; padding:7px 14px; border-radius:var(--radius-sm); border:1px solid var(--border); background:transparent; color:var(--text3); font-family:var(--font-body); font-size:12px; cursor:pointer; transition:all .15s; }
+    .btn-back:hover { border-color:var(--border-hi); color:var(--text2); }
+    .btn-back:disabled { opacity:.3; cursor:not-allowed; }
+    /* Submit button (before answering) */
+    .btn-submit { padding:12px 28px; border-radius:var(--radius-sm); border:none; background:var(--accent); color:#0d0f14; font-family:var(--font-body); font-size:14px; font-weight:600; cursor:pointer; transition:all .2s; }
+    .btn-submit:hover { background:var(--accent2); transform:translateY(-1px); }
 
-    /* Loading */
+    /* ── Loading ── */
     .loading-state { display:flex; flex-direction:column; align-items:center; padding:48px 20px; gap:14px; text-align:center; }
     .spinner { width:32px; height:32px; border:2px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; }
     .spinner-sm { width:16px; height:16px; border-width:2px; }
     .loading-label { font-size:14px; color:var(--text2); }
     .loading-sub { font-size:12px; color:var(--text3); }
 
-    /* Results */
+    /* ── Results ── */
     .result-hero { text-align:center; padding:32px 20px 24px; }
     .result-pct { font-family:var(--font-display); font-size:68px; color:var(--accent2); line-height:1; }
     .result-grade { font-size:15px; color:var(--text2); margin-top:8px; }
@@ -149,7 +211,7 @@
     .rb-val { font-family:var(--font-display); font-size:28px; color:var(--text); }
     .rb-lbl { font-size:11px; color:var(--text3); margin-top:2px; }
 
-    /* Review */
+    /* ── Review ── */
     .review-item { border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; margin-bottom:8px; }
     .review-header { display:flex; align-items:center; gap:10px; padding:12px 14px; background:var(--bg3); cursor:pointer; font-size:13px; }
     .review-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
@@ -160,7 +222,7 @@
     .review-body.open { display:block; }
     .review-body strong { color:var(--text); }
 
-    /* Error Bank */
+    /* ── Error Bank ── */
     .empty-state { text-align:center; padding:40px 20px; color:var(--text3); font-size:14px; }
     .empty-state .big { font-family:var(--font-display); font-size:32px; color:var(--text2); margin-bottom:8px; }
     .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:16px; }
@@ -183,7 +245,7 @@
     .error-body strong { color:var(--text); }
     .error-actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
 
-    /* Weak Areas */
+    /* ── Weak Areas ── */
     .weak-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border); }
     .weak-row:last-child { border-bottom:none; }
     .weak-name { font-size:14px; color:var(--text); }
@@ -195,31 +257,59 @@
     .weak-bar.high { background:var(--green); }
     .weak-pct { font-size:12px; color:var(--text2); min-width:34px; text-align:right; }
 
-    /* Divider / Row utils */
+    /* ── Utils ── */
     .divider { height:1px; background:var(--border); margin:14px 0; }
     .row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
     .spacer { flex:1; }
+    .footer { text-align:center; padding:20px 0; font-size:11px; color:var(--text3); }
+    #toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--accent); color:#0d0f14; padding:8px 18px; border-radius:20px; font-size:13px; font-weight:500; z-index:999; pointer-events:none; transition:opacity .3s; opacity:0; }
 
-    /* Animations */
     @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
     @keyframes spin { to{transform:rotate(360deg)} }
-
-    .footer { text-align:center; padding:20px 0; font-size:11px; color:var(--text3); }
-
-    /* Toast */
-    #toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--accent); color:#0d0f14; padding:8px 18px; border-radius:20px; font-size:13px; font-weight:500; z-index:999; pointer-events:none; transition:opacity .3s; opacity:0; }
   </style>
 </head>
 <body>
+
+<!-- USER SELECT -->
+<div id="user-select-screen">
+  <div class="user-select-header">
+    <div class="eyebrow">Singapore School Quiz</div>
+    <h1>Who's practising<br><em>today?</em></h1>
+    <p>Select your name to load your personal quiz &amp; error bank</p>
+  </div>
+  <div class="user-cards">
+    <div class="user-card ziyan" onclick="selectUser('ziyan')">
+      <div class="user-avatar">🌸</div>
+      <div class="user-card-name">Zhu Ziyan</div>
+      <div class="user-card-meta">Primary School</div>
+      <div class="user-card-scope">Primary 3 &amp; 4</div>
+    </div>
+    <div class="user-card zonghan" onclick="selectUser('zonghan')">
+      <div class="user-avatar">⚡</div>
+      <div class="user-card-name">Zhu Zonghan</div>
+      <div class="user-card-meta">Secondary School</div>
+      <div class="user-card-scope">Secondary 1 &amp; 2</div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app" style="display:none">
 <div class="page">
 
   <header class="site-header">
-    <div class="eyebrow">Singapore Secondary School</div>
+    <div class="eyebrow" id="header-eyebrow">Singapore School Quiz</div>
     <h1>Practice smarter,<br><em>score higher.</em></h1>
-    <p>AI-generated questions for Secondary 1 &amp; 2 — powered by Claude</p>
+    <p id="header-sub">Loading…</p>
+    <div class="user-switcher">
+      <div class="user-chip" id="user-chip" onclick="switchUser()">
+        <span class="dot"></span>
+        <span id="user-chip-name">—</span>
+        <span style="color:var(--text3);font-size:10px">· switch</span>
+      </div>
+    </div>
   </header>
 
-  <!-- TABS -->
   <div class="nav-tabs">
     <button class="nav-tab active" onclick="switchTab('practice')">Practice Quiz</button>
     <button class="nav-tab" onclick="switchTab('errorbank')">
@@ -228,7 +318,7 @@
     <button class="nav-tab" onclick="switchTab('weakareas')">Weak Areas</button>
   </div>
 
-  <!-- ══════════ PRACTICE TAB ══════════ -->
+  <!-- ══ PRACTICE TAB ══ -->
   <div id="tab-practice">
 
     <!-- SETUP -->
@@ -243,24 +333,19 @@
       </div>
 
       <div class="card">
-        <div class="card-label">Year level</div>
-        <div class="level-toggle">
-          <button class="level-btn active" id="lvl-s1" onclick="selectLevel('S1')">
-            Secondary 1 <span class="level-sub">Age 13 · Express / Normal</span>
-          </button>
-          <button class="level-btn" id="lvl-s2" onclick="selectLevel('S2')">
-            Secondary 2 <span class="level-sub">Age 14 · Express / Normal</span>
-          </button>
-        </div>
+        <div class="card-label" id="level-label">Year level</div>
+        <div class="level-toggle" id="level-toggle"></div>
       </div>
 
       <div class="card">
         <div class="card-label">Subject</div>
         <div class="subject-cards" id="subject-cards"></div>
+        <!-- Example preview shown after subject click -->
+        <div id="subject-examples" style="display:none"></div>
       </div>
 
       <div class="card" id="topic-card" style="display:none">
-        <div class="card-label">Topic / skill area <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(select one or more, or leave as All)</span></div>
+        <div class="card-label">Topic / skill area <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(select specific topics, or leave as All)</span></div>
         <div class="topic-pills" id="topic-pills"></div>
       </div>
 
@@ -285,7 +370,7 @@
           <button class="btn btn-primary" onclick="startQuiz()">Generate quiz →</button>
         </div>
       </div>
-    </div>
+    </div><!-- /setup-view -->
 
     <!-- LOADING -->
     <div id="loading-view" style="display:none">
@@ -312,18 +397,29 @@
         <div class="question-text" id="q-text"></div>
         <div id="q-body"></div>
         <div id="feedback-box"></div>
-        <div class="nav-row">
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-ghost btn-sm" id="explain-btn" onclick="explainCurrent()" style="display:none">Deep explain</button>
-            <button class="btn btn-ghost btn-sm" id="add-bank-btn" onclick="manualAddToBank()" style="display:none">+ Error Bank</button>
-          </div>
-          <div style="display:flex;gap:8px">
-            <button class="btn btn-ghost btn-sm" id="next-btn" onclick="nextQuestion()" style="display:none">Next →</button>
-            <button class="btn btn-primary btn-sm" id="submit-btn" onclick="submitAnswer()">Submit</button>
+
+        <!-- Quiz navigation -->
+        <div class="quiz-nav">
+          <!-- Big NEXT button — full width, shown after answering -->
+          <button class="btn-next-big" id="next-btn" onclick="nextQuestion()">
+            Next question →
+          </button>
+          <!-- Row: back on left, submit/tools on right -->
+          <div class="quiz-nav-row">
+            <div class="quiz-nav-left">
+              <button class="btn-back" id="back-btn" onclick="goBack()" disabled>
+                ← Back
+              </button>
+            </div>
+            <div class="quiz-nav-right">
+              <button class="btn btn-ghost btn-sm" id="explain-btn" onclick="explainCurrent()" style="display:none">Deep explain</button>
+              <button class="btn btn-ghost btn-sm" id="add-bank-btn" onclick="manualAddToBank()" style="display:none">+ Error Bank</button>
+              <button class="btn-submit" id="submit-btn" onclick="submitAnswer()">Submit</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </div><!-- /quiz-view -->
 
     <!-- RESULT -->
     <div id="result-view" style="display:none">
@@ -351,12 +447,11 @@
 
   </div><!-- /tab-practice -->
 
-
-  <!-- ══════════ ERROR BANK TAB ══════════ -->
+  <!-- ══ ERROR BANK TAB ══ -->
   <div id="tab-errorbank" style="display:none">
     <div class="card">
       <div class="row">
-        <div class="card-label" style="margin:0">My Error Bank</div>
+        <div class="card-label" style="margin:0" id="eb-title">Error Bank</div>
         <div class="spacer"></div>
         <button class="btn btn-primary btn-sm" onclick="practiceErrorBank()" id="practice-errors-btn" disabled>Practice errors →</button>
         <button class="btn btn-danger btn-sm" onclick="clearErrorBank()">Clear all</button>
@@ -368,18 +463,17 @@
     </div>
   </div>
 
-
-  <!-- ══════════ WEAK AREAS TAB ══════════ -->
+  <!-- ══ WEAK AREAS TAB ══ -->
   <div id="tab-weakareas" style="display:none">
     <div class="card">
-      <div class="card-label">Performance by topic</div>
+      <div class="card-label" id="wa-title">Performance by topic</div>
       <div id="weak-topic-list">
         <div class="empty-state"><div class="big">No data yet</div>Complete some quizzes to track your weak areas.</div>
       </div>
     </div>
     <div class="card" id="weak-practice-card" style="display:none">
       <div class="card-label">Practice your weak areas</div>
-      <p style="font-size:13px;color:var(--text2);margin-bottom:14px">Generate a quiz targeting your lowest-scoring topics.</p>
+      <p style="font-size:13px;color:var(--text2);margin-bottom:14px">Generate a focused quiz on your lowest-scoring topics.</p>
       <div class="controls">
         <select id="weak-num-q">
           <option value="5">5 questions</option>
@@ -390,39 +484,99 @@
     </div>
   </div>
 
-  <div class="footer">Singapore Secondary Prep · Powered by Claude AI</div>
+  <div class="footer">Zhu Family Quiz · Powered by Claude AI</div>
 </div>
+</div><!-- /main-app -->
 
 <div id="toast"></div>
 
 <script>
-/* ═══════════════════════════════════
-   SUBJECTS & TOPICS DATA
-═══════════════════════════════════ */
-const SUBJECTS = [
-  {
-    id:'math', name:'Mathematics', desc:'Algebra, geometry, statistics & more',
-    topics:['Whole Numbers & Integers','Fractions & Decimals','Ratio & Proportion','Percentages','Algebra – Expressions','Algebra – Equations & Inequalities','Geometry – Angles & Lines','Geometry – Triangles & Polygons','Perimeter, Area & Volume','Statistics & Data Handling','Graphs & Functions','Number Patterns & Sequences']
+/* ══════════════════════════════════════════
+   SUBJECT EXAMPLES (shown on card click)
+══════════════════════════════════════════ */
+const SUBJECT_EXAMPLES = {
+  ziyan: {
+    math: [
+      { type:'mcq', q:'Meilin has 3/4 of a pizza. She eats 1/3 of her share. What fraction of the whole pizza did she eat?', opts:['A. 1/4','B. 1/3','C. 1/2','D. 2/3'], ans:'A' },
+      { type:'short', q:'A rectangle has a length of 12 cm and a width of 7 cm. What is its perimeter?', ans:'38 cm' }
+    ],
+    sci: [
+      { type:'mcq', q:'Which part of a plant makes food using sunlight?', opts:['A. Root','B. Stem','C. Leaf','D. Flower'], ans:'C' },
+      { type:'short', q:'Name two ways heat can travel from one object to another.', ans:'Conduction and radiation' }
+    ],
+    eng: [
+      { type:'mcq', q:'Choose the correct word: "She ___ to school every day by bus."', opts:['A. go','B. goes','C. gone','D. going'], ans:'B' },
+      { type:'short', q:'Write a sentence using the word "anxious" to show you understand its meaning.', ans:'e.g. She was anxious about her exam results.' }
+    ],
+    chi: [
+      { type:'mcq', q:'下面哪个词语的意思是"非常高兴"？', opts:['A. 伤心','B. 害怕','C. 欣喜若狂','D. 担心'], ans:'C' },
+      { type:'short', q:'用"虽然……但是……"造一个句子。', ans:'例如：虽然今天下雨，但是我们还是去上学了。' }
+    ]
   },
-  {
-    id:'chem', name:'Chemistry', desc:'Matter, atoms, reactions, periodic table',
-    topics:['Measurement & Scientific Units','States of Matter & Kinetic Theory','Atomic Structure','The Periodic Table','Chemical Bonding','Chemical Formulae & Naming','Chemical Equations & Balancing','Acids, Bases & Salts','Oxidation & Reduction','Separation Techniques','Metals & Reactivity Series','Air, Atmosphere & Environment']
-  },
-  {
-    id:'phys', name:'Physics', desc:'Forces, energy, waves, electricity',
-    topics:['Measurement & Scientific Units','Kinematics – Speed & Velocity','Forces & Newton\'s Laws','Work, Energy & Power','Pressure & Density','Heat & Temperature','Transfer of Thermal Energy','Light & Optics','Sound & Waves','Electricity – Circuits & Ohm\'s Law','Magnetism & Electromagnetism','Simple Machines & Moments']
-  },
-  {
-    id:'eng', name:'English Language', desc:'Grammar, vocabulary, writing & comprehension',
-    topics:['Vocabulary – Word Meaning in Context','Vocabulary – Synonyms & Antonyms','Vocabulary – Phrasal Verbs & Idioms','Grammar – Tenses (Simple, Perfect, Continuous)','Grammar – Subject-Verb Agreement','Grammar – Articles & Determiners','Grammar – Prepositions','Grammar – Conjunctions & Sentence Structure','Grammar – Active & Passive Voice','Reading Comprehension Skills','Summary Writing','Editing & Error Correction','Situational Writing (Emails, Letters, Reports)','Continuous Writing – Narrative','Continuous Writing – Expository & Argumentative']
+  zonghan: {
+    math: [
+      { type:'mcq', q:'Solve for x: 3x + 7 = 22', opts:['A. x = 3','B. x = 5','C. x = 7','D. x = 9'], ans:'B' },
+      { type:'short', q:'A cylinder has radius 5 cm and height 10 cm. Find its volume. (Take π = 3.14)', ans:'785 cm³' }
+    ],
+    chem: [
+      { type:'mcq', q:'Which of the following is a physical change?', opts:['A. Burning wood','B. Rusting iron','C. Melting ice','D. Cooking an egg'], ans:'C' },
+      { type:'short', q:'Write the word equation for the reaction between hydrochloric acid and sodium hydroxide.', ans:'Hydrochloric acid + Sodium hydroxide → Sodium chloride + Water' }
+    ],
+    phys: [
+      { type:'mcq', q:'A car travels 120 km in 2 hours. What is its average speed?', opts:['A. 40 km/h','B. 60 km/h','C. 80 km/h','D. 120 km/h'], ans:'B' },
+      { type:'short', q:'State Newton\'s First Law of Motion in your own words.', ans:'An object at rest stays at rest, and an object in motion stays in motion, unless acted on by an external force.' }
+    ],
+    eng: [
+      { type:'mcq', q:'Choose the correct sentence:', opts:['A. Neither of the boys are ready.','B. Neither of the boys is ready.','C. Neither of the boys were ready.','D. Neither of the boys was ready.'], ans:'B' },
+      { type:'short', q:'Rewrite in passive voice: "The teacher marked all the exam papers."', ans:'"All the exam papers were marked by the teacher."' }
+    ]
   }
-];
+};
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════════
+   USER PROFILES
+══════════════════════════════════════════ */
+const USERS = {
+  ziyan: {
+    id:'ziyan', name:'Zhu Ziyan', emoji:'🌸', colorClass:'ziyan',
+    school:'Primary School',
+    levels:[{id:'P3',label:'Primary 3',sub:'Age 9'},{id:'P4',label:'Primary 4',sub:'Age 10'}],
+    defaultLevel:'P3',
+    subjects:[
+      { id:'math', name:'Mathematics', desc:'Numbers, fractions, geometry, problem sums',
+        topics:['Whole Numbers','Addition & Subtraction','Multiplication & Division','Fractions','Decimals','Money','Measurement – Length & Mass','Measurement – Time','Area & Perimeter','Geometry – Shapes & Angles','Data Analysis – Tables & Graphs','Word Problems & Heuristics'] },
+      { id:'sci', name:'Science', desc:'Living things, materials, energy, environment',
+        topics:['Living & Non-Living Things','Plants & Their Parts','Animals & Classification','Human Body Systems','Materials & Properties','Water Cycle','Weather & Environment','Light & Shadows','Heat & Temperature','Forces & Magnets','Electricity & Simple Circuits','Ecosystems & Food Chains'] },
+      { id:'eng', name:'English Language', desc:'Grammar, vocabulary, comprehension, writing',
+        topics:['Vocabulary – Word Meaning','Vocabulary – Synonyms & Antonyms','Grammar – Tenses','Grammar – Nouns & Pronouns','Grammar – Adjectives & Adverbs','Grammar – Prepositions','Punctuation','Comprehension – Reading & Answering','Visual Text Comprehension','Composition – Narrative Writing','Oral Communication','Editing & Error Correction'] },
+      { id:'chi', name:'Chinese Language', desc:'词汇、语法、阅读、写作',
+        topics:['词汇 – 词语理解','词汇 – 近义词与反义词','语法 – 句子结构','语法 – 标点符号','阅读理解','看图写话','书写 – 汉字笔顺','成语运用','造句练习','听说能力'] }
+    ]
+  },
+  zonghan: {
+    id:'zonghan', name:'Zhu Zonghan', emoji:'⚡', colorClass:'zonghan',
+    school:'Secondary School',
+    levels:[{id:'S1',label:'Secondary 1',sub:'Age 13'},{id:'S2',label:'Secondary 2',sub:'Age 14'}],
+    defaultLevel:'S1',
+    subjects:[
+      { id:'math', name:'Mathematics', desc:'Algebra, geometry, statistics & more',
+        topics:['Whole Numbers & Integers','Fractions & Decimals','Ratio & Proportion','Percentages','Algebra – Expressions','Algebra – Equations & Inequalities','Geometry – Angles & Lines','Geometry – Triangles & Polygons','Perimeter, Area & Volume','Statistics & Data Handling','Graphs & Functions','Number Patterns & Sequences'] },
+      { id:'chem', name:'Chemistry', desc:'Matter, atoms, reactions, periodic table',
+        topics:['Measurement & Scientific Units','States of Matter & Kinetic Theory','Atomic Structure','The Periodic Table','Chemical Bonding','Chemical Formulae & Naming','Chemical Equations & Balancing','Acids, Bases & Salts','Oxidation & Reduction','Separation Techniques','Metals & Reactivity Series','Air, Atmosphere & Environment'] },
+      { id:'phys', name:'Physics', desc:'Forces, energy, waves, electricity',
+        topics:['Measurement & Scientific Units','Kinematics – Speed & Velocity','Forces & Newton\'s Laws','Work, Energy & Power','Pressure & Density','Heat & Temperature','Transfer of Thermal Energy','Light & Optics','Sound & Waves','Electricity – Circuits & Ohm\'s Law','Magnetism & Electromagnetism','Simple Machines & Moments'] },
+      { id:'eng', name:'English Language', desc:'Grammar, vocabulary, writing & comprehension',
+        topics:['Vocabulary – Word Meaning in Context','Vocabulary – Synonyms & Antonyms','Vocabulary – Phrasal Verbs & Idioms','Grammar – Tenses','Grammar – Subject-Verb Agreement','Grammar – Articles & Determiners','Grammar – Prepositions','Grammar – Conjunctions & Sentence Structure','Grammar – Active & Passive Voice','Reading Comprehension Skills','Summary Writing','Editing & Error Correction','Situational Writing','Continuous Writing – Narrative','Continuous Writing – Expository & Argumentative'] }
+    ]
+  }
+};
+
+/* ══════════════════════════════════════════
    STATE
-═══════════════════════════════════ */
+══════════════════════════════════════════ */
+let currentUser    = null;
 let apiKey         = localStorage.getItem('sg_quiz_apikey') || '';
-let selectedLevel  = 'S1';
+let selectedLevel  = null;
 let selectedSubject = null;
 let selectedTopics = [];
 let questions      = [];
@@ -432,425 +586,474 @@ let results        = [];
 let score          = 0;
 let ebFilter       = 'all';
 
-/* ═══════════════════════════════════
-   LOCAL STORAGE HELPERS
-═══════════════════════════════════ */
-function loadBank()      { try { return JSON.parse(localStorage.getItem('sg_errorbank') || '[]'); } catch(e) { return []; } }
-function saveBank(b)     { localStorage.setItem('sg_errorbank', JSON.stringify(b)); updateBadge(); }
-function loadPerf()      { try { return JSON.parse(localStorage.getItem('sg_perf') || '{}'); } catch(e) { return {}; } }
-function savePerf(p)     { localStorage.setItem('sg_perf', JSON.stringify(p)); }
+/* ══════════════════════════════════════════
+   PER-USER STORAGE
+══════════════════════════════════════════ */
+function bankKey() { return `sg_errorbank_${currentUser}`; }
+function perfKey() { return `sg_perf_${currentUser}`; }
+function loadBank()  { try { return JSON.parse(localStorage.getItem(bankKey())||'[]'); } catch(e) { return []; } }
+function saveBank(b) { localStorage.setItem(bankKey(),JSON.stringify(b)); updateBadge(); }
+function loadPerf()  { try { return JSON.parse(localStorage.getItem(perfKey())||'{}'); } catch(e) { return {}; } }
+function savePerf(p) { localStorage.setItem(perfKey(),JSON.stringify(p)); }
 
 function updateBadge() {
-  const n = loadBank().filter(e => !e.mastered).length;
-  const b = document.getElementById('error-count-badge');
-  b.textContent = n; b.style.display = n > 0 ? '' : 'none';
+  const n=loadBank().filter(e=>!e.mastered).length;
+  const b=document.getElementById('error-count-badge');
+  b.textContent=n; b.style.display=n>0?'':'none';
 }
-
-function recordPerf(topic, subjectName, isCorrect) {
-  const p = loadPerf();
-  const key = subjectName + '||' + topic;
-  if (!p[key]) p[key] = { topic, subject:subjectName, correct:0, total:0 };
+function recordPerf(topic,subjectName,isCorrect) {
+  const p=loadPerf(); const key=subjectName+'||'+topic;
+  if (!p[key]) p[key]={topic,subject:subjectName,correct:0,total:0};
   p[key].total++; if (isCorrect) p[key].correct++;
   savePerf(p);
 }
-
-function autoAddError(q, userAnswer) {
-  const bank = loadBank();
-  if (bank.find(e => e.question === q.question)) return;
-  bank.push({
-    id: Date.now() + Math.random(),
-    question: q.question, type: q.type, options: q.options,
-    answer: q.answer, explanation: q.explanation,
-    topic: q.topic || '—',
-    subject: q._subject || '', subjectName: q._subjectName || '',
-    level: q._level || '',
-    userAnswer, addedAt: new Date().toISOString(),
-    mastered: false, attempts: 0
-  });
+function autoAddError(q,userAnswer) {
+  const bank=loadBank();
+  if (bank.find(e=>e.question===q.question)) return;
+  bank.push({ id:Date.now()+Math.random(), question:q.question, type:q.type, options:q.options,
+    answer:q.answer, explanation:q.explanation, topic:q.topic||'—',
+    subject:q._subject||'', subjectName:q._subjectName||'', level:q._level||'',
+    userAnswer, addedAt:new Date().toISOString(), mastered:false, attempts:0 });
   saveBank(bank);
 }
 
-/* ═══════════════════════════════════
-   INIT
-═══════════════════════════════════ */
-function init() {
-  if (apiKey) document.getElementById('api-key').value = apiKey;
+/* ══════════════════════════════════════════
+   USER SELECTION
+══════════════════════════════════════════ */
+function selectUser(userId) {
+  currentUser=userId;
+  localStorage.setItem('sg_last_user',userId);
+  const user=USERS[userId];
+  selectedLevel=user.defaultLevel; selectedSubject=null; selectedTopics=[]; ebFilter='all';
+
+  document.getElementById('header-eyebrow').textContent=user.school+' Quiz';
+  document.getElementById('header-sub').textContent=`Hello, ${user.name}! Ready to practise?`;
+  const chip=document.getElementById('user-chip');
+  chip.className='user-chip '+user.colorClass;
+  document.getElementById('user-chip-name').textContent=user.name;
+  document.getElementById('eb-title').textContent=`${user.name}'s Error Bank`;
+  document.getElementById('wa-title').textContent=`${user.name}'s Performance by Topic`;
+
+  // Level buttons
+  const lt=document.getElementById('level-toggle'); lt.innerHTML='';
+  user.levels.forEach(lv=>{
+    const btn=document.createElement('button');
+    btn.className='level-btn'+(lv.id===selectedLevel?' active':'');
+    btn.dataset.id=lv.id;
+    btn.innerHTML=`${lv.label}<span class="level-sub">${lv.sub}</span>`;
+    btn.addEventListener('click',()=>{ selectedLevel=lv.id; lt.querySelectorAll('.level-btn').forEach(b=>b.classList.toggle('active',b.dataset.id===lv.id)); });
+    lt.appendChild(btn);
+  });
+
   buildSubjectCards();
   updateBadge();
+  document.getElementById('user-select-screen').style.display='none';
+  document.getElementById('main-app').style.display='';
+  showPracticeView('setup'); switchTab('practice');
 }
 
-/* ═══════════════════════════════════
+function switchUser() {
+  document.getElementById('main-app').style.display='none';
+  document.getElementById('user-select-screen').style.display='flex';
+  currentUser=null; selectedSubject=null; selectedTopics=[];
+  document.getElementById('topic-card').style.display='none';
+  document.getElementById('subject-examples').style.display='none';
+}
+
+/* ══════════════════════════════════════════
    TABS
-═══════════════════════════════════ */
+══════════════════════════════════════════ */
 function switchTab(tab) {
-  ['practice','errorbank','weakareas'].forEach(t => {
-    document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
-  });
-  document.querySelectorAll('.nav-tab').forEach((el, i) => {
-    el.classList.toggle('active', ['practice','errorbank','weakareas'][i] === tab);
-  });
-  if (tab === 'errorbank') renderErrorBank();
-  if (tab === 'weakareas') renderWeakAreas();
+  ['practice','errorbank','weakareas'].forEach(t=>
+    document.getElementById('tab-'+t).style.display=t===tab?'':'none');
+  document.querySelectorAll('.nav-tab').forEach((el,i)=>
+    el.classList.toggle('active',['practice','errorbank','weakareas'][i]===tab));
+  if (tab==='errorbank') renderErrorBank();
+  if (tab==='weakareas') renderWeakAreas();
 }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════════
    SETUP
-═══════════════════════════════════ */
+══════════════════════════════════════════ */
 function saveKey() {
-  apiKey = document.getElementById('api-key').value.trim();
+  apiKey=document.getElementById('api-key').value.trim();
   if (apiKey) {
-    localStorage.setItem('sg_quiz_apikey', apiKey);
-    const btn = document.querySelector('[onclick="saveKey()"]');
-    btn.textContent = 'Saved ✓';
-    setTimeout(() => btn.textContent = 'Save', 2200);
+    localStorage.setItem('sg_quiz_apikey',apiKey);
+    const btn=document.querySelector('[onclick="saveKey()"]');
+    btn.textContent='Saved ✓'; setTimeout(()=>btn.textContent='Save',2200);
   }
 }
 
-function selectLevel(lvl) {
-  selectedLevel = lvl;
-  document.getElementById('lvl-s1').classList.toggle('active', lvl === 'S1');
-  document.getElementById('lvl-s2').classList.toggle('active', lvl === 'S2');
-}
-
 function buildSubjectCards() {
-  const container = document.getElementById('subject-cards');
-  container.innerHTML = '';
-  SUBJECTS.forEach(s => {
-    const div = document.createElement('div');
-    div.className = 'subject-card'; div.dataset.id = s.id;
-    div.innerHTML = `<div class="subject-card-name">${s.name}</div><div class="subject-card-desc">${s.desc}</div>`;
-    div.addEventListener('click', () => selectSubject(s.id));
+  const container=document.getElementById('subject-cards'); container.innerHTML='';
+  USERS[currentUser].subjects.forEach(s=>{
+    const div=document.createElement('div');
+    div.className='subject-card'; div.dataset.id=s.id;
+    div.innerHTML=`<div class="subject-card-name">${s.name}</div><div class="subject-card-desc">${s.desc}</div>`;
+    div.addEventListener('click',()=>selectSubject(s.id));
     container.appendChild(div);
   });
 }
 
 function selectSubject(id) {
-  selectedSubject = SUBJECTS.find(s => s.id === id);
-  selectedTopics = [];
-  document.querySelectorAll('.subject-card').forEach(c => c.classList.toggle('active', c.dataset.id === id));
+  const user=USERS[currentUser];
+  selectedSubject=user.subjects.find(s=>s.id===id);
+  selectedTopics=[];
+  document.querySelectorAll('.subject-card').forEach(c=>c.classList.toggle('active',c.dataset.id===id));
   buildTopicPills();
+  renderSubjectExamples(id);
+}
+
+/* ── Subject Example Preview ── */
+function renderSubjectExamples(subjId) {
+  const box=document.getElementById('subject-examples');
+  const examples=SUBJECT_EXAMPLES[currentUser]?.[subjId];
+  if (!examples||examples.length===0) { box.style.display='none'; return; }
+
+  let html=`<div class="subject-examples">
+    <div class="subject-examples-label">Sample questions for this subject</div>`;
+
+  examples.forEach(ex=>{
+    const typeLabel=ex.type==='mcq'?'Multiple Choice':'Short Answer';
+    html+=`<div class="example-q">
+      <span class="example-q-type ${ex.type}">${typeLabel}</span>
+      <div class="example-q-text">${ex.q}</div>`;
+    if (ex.type==='mcq'&&ex.opts) {
+      html+='<div class="example-options">';
+      ex.opts.forEach(opt=>{
+        const letter=opt[0];
+        const isAns=letter===ex.ans;
+        html+=`<div class="example-option ${isAns?'correct-opt':''}">${opt}${isAns?' ✓':''}</div>`;
+      });
+      html+='</div>';
+    } else {
+      html+=`<div class="example-option correct-opt" style="margin-top:4px">Answer: ${ex.ans}</div>`;
+    }
+    html+='</div>';
+  });
+  html+='</div>';
+  box.innerHTML=html; box.style.display='';
 }
 
 function buildTopicPills() {
-  const card = document.getElementById('topic-card');
-  const pills = document.getElementById('topic-pills');
-  card.style.display = ''; pills.innerHTML = '';
-
-  const allPill = makePill('All topics', true, () => {
-    selectedTopics = [];
-    pills.querySelectorAll('.topic-pill').forEach(p => p.classList.remove('active'));
+  const card=document.getElementById('topic-card');
+  const pills=document.getElementById('topic-pills');
+  card.style.display=''; pills.innerHTML='';
+  const allPill=makePill('All topics',true,()=>{
+    selectedTopics=[];
+    pills.querySelectorAll('.topic-pill').forEach(p=>p.classList.remove('active'));
     allPill.classList.add('active');
   });
   pills.appendChild(allPill);
-
-  selectedSubject.topics.forEach(t => {
-    const p = makePill(t, false, () => {
+  selectedSubject.topics.forEach(t=>{
+    const p=makePill(t,false,()=>{
       allPill.classList.remove('active');
-      const idx = selectedTopics.indexOf(t);
-      if (idx > -1) { selectedTopics.splice(idx,1); p.classList.remove('active'); }
-      else { selectedTopics.push(t); p.classList.add('active'); }
-      if (selectedTopics.length === 0) allPill.classList.add('active');
+      const idx=selectedTopics.indexOf(t);
+      if (idx>-1){selectedTopics.splice(idx,1);p.classList.remove('active');}
+      else{selectedTopics.push(t);p.classList.add('active');}
+      if (selectedTopics.length===0) allPill.classList.add('active');
     });
     pills.appendChild(p);
   });
 }
 
-function makePill(label, active, onClick) {
-  const p = document.createElement('div');
-  p.className = 'topic-pill' + (active ? ' active' : '');
-  p.textContent = label;
-  p.addEventListener('click', onClick);
-  return p;
+function makePill(label,active,onClick) {
+  const p=document.createElement('div');
+  p.className='topic-pill'+(active?' active':'');
+  p.textContent=label; p.addEventListener('click',onClick); return p;
 }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════════
    VIEW HELPERS
-═══════════════════════════════════ */
+══════════════════════════════════════════ */
 function showPracticeView(v) {
-  ['setup','loading','quiz','result'].forEach(id =>
-    document.getElementById(id + '-view').style.display = id === v ? '' : 'none');
+  ['setup','loading','quiz','result'].forEach(id=>
+    document.getElementById(id+'-view').style.display=id===v?'':'none');
 }
 function showPracticeSetup() { showPracticeView('setup'); switchTab('practice'); }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════════
    CLAUDE API
-═══════════════════════════════════ */
-async function callClaude(prompt, maxTokens) {
-  const key = apiKey || document.getElementById('api-key').value.trim();
+══════════════════════════════════════════ */
+async function callClaude(prompt,maxTokens) {
+  const key=apiKey||document.getElementById('api-key').value.trim();
   if (!key) throw new Error('Please enter and save your Anthropic API key first.');
-  apiKey = key; localStorage.setItem('sg_quiz_apikey', key);
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  apiKey=key; localStorage.setItem('sg_quiz_apikey',key);
+  const res=await fetch('https://api.anthropic.com/v1/messages',{
     method:'POST',
-    headers:{
-      'Content-Type':'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version':'2023-06-01',
-      'anthropic-dangerous-direct-browser-access':'true'
-    },
-    body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens: maxTokens || 3500, messages:[{ role:'user', content: prompt }] })
+    headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:maxTokens||3500,messages:[{role:'user',content:prompt}]})
   });
-  const data = await res.json();
+  const data=await res.json();
   if (data.error) throw new Error(data.error.message);
   return data.content[0].text;
 }
 
-/* ═══════════════════════════════════
-   START QUIZ (normal or override)
-═══════════════════════════════════ */
+/* ══════════════════════════════════════════
+   START QUIZ
+══════════════════════════════════════════ */
 async function startQuiz(override) {
-  if (!override && !selectedSubject) { alert('Please select a subject.'); return; }
+  if (!override&&!selectedSubject){alert('Please select a subject.');return;}
+  questions=[];current=0;answers=[];results=[];score=0;
+  switchTab('practice'); showPracticeView('loading');
 
-  questions = []; current = 0; answers = []; results = []; score = 0;
-  switchTab('practice');
-  showPracticeView('loading');
+  const numQ  =override?.numQ  ||document.getElementById('num-q').value;
+  const diff  =override?.diff  ||document.getElementById('diff').value;
+  const qType =override?.qType ||document.getElementById('q-type').value;
+  const subj  =override?.subject||selectedSubject;
+  const lvl   =override?.level ||selectedLevel;
+  const topics=override?.topics||selectedTopics;
+  const user  =USERS[currentUser];
+  const lvlLabel=user.levels.find(l=>l.id===lvl)?.label||lvl;
 
-  const numQ   = override?.numQ   || document.getElementById('num-q').value;
-  const diff   = override?.diff   || document.getElementById('diff').value;
-  const qType  = override?.qType  || document.getElementById('q-type').value;
-  const subj   = override?.subject || selectedSubject;
-  const lvl    = override?.level  || selectedLevel;
-  const topics = override?.topics || selectedTopics;
+  const topicLine=topics.length>0?`Focus ONLY on these topics: ${topics.join(', ')}.`:`Cover a variety of topics across the ${subj.name} syllabus.`;
+  const typeRule=qType==='mcq'?'All questions must be type "mcq".':qType==='short'?'All questions must be type "short_answer".':'Mix mcq and short_answer roughly equally.';
 
-  const topicLine = topics.length > 0
-    ? `Focus ONLY on these specific topics: ${topics.join(', ')}.`
-    : `Cover a variety of topics from the ${subj.name} ${lvl} syllabus.`;
-
-  const typeRule = qType === 'mcq' ? 'All questions must be type "mcq".'
-                 : qType === 'short' ? 'All questions must be type "short_answer".'
-                 : 'Mix mcq and short_answer roughly equally.';
-
-  const prompt = `You are an experienced Singapore MOE secondary school teacher creating a ${diff}-level practice quiz.
-Subject: Singapore ${lvl} ${subj.name}
+  const prompt=`You are an experienced Singapore MOE ${user.school} teacher.
+Generate exactly ${numQ} ${diff}-level exam practice questions for Singapore ${lvlLabel} ${subj.name}.
 ${topicLine}
-Number of questions: exactly ${numQ}
 ${typeRule}
-
-Each question MUST include a "topic" field (the specific topic or skill being tested).
+Each question MUST include a "topic" field. Use age-appropriate language for ${lvlLabel} students.
 
 Return ONLY valid JSON with no preamble or markdown:
-{
-  "questions": [
-    {
-      "id": 1,
-      "type": "mcq",
-      "topic": "Specific topic name",
-      "question": "Full question text here.",
-      "options": ["A. First option", "B. Second option", "C. Third option", "D. Fourth option"],
-      "answer": "B",
-      "explanation": "Clear explanation of why B is correct and the others are not."
-    },
-    {
-      "id": 2,
-      "type": "short_answer",
-      "topic": "Specific topic name",
-      "question": "Full question text here.",
-      "options": null,
-      "answer": "Key points: point one; point two; point three.",
-      "explanation": "Full model answer explanation."
-    }
-  ]
-}`;
+{"questions":[
+  {"id":1,"type":"mcq","topic":"Topic","question":"Full question.","options":["A. ..","B. ..","C. ..","D. .."],"answer":"B","explanation":"Clear explanation."},
+  {"id":2,"type":"short_answer","topic":"Topic","question":"Full question.","options":null,"answer":"Key points.","explanation":"Full explanation."}
+]}`;
 
   try {
-    document.getElementById('loading-msg').textContent = 'Claude is crafting your questions…';
-    const raw    = await callClaude(prompt, 3800);
-    const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
-    questions = parsed.questions;
-    questions.forEach(q => { q._subject = subj.id; q._subjectName = subj.name; q._level = lvl; });
-    answers = new Array(questions.length).fill(null);
-    results = new Array(questions.length).fill(null);
-    showPracticeView('quiz');
-    renderQuestion();
-  } catch(e) {
-    showPracticeView('setup');
-    alert('Error generating quiz:\n' + e.message);
-  }
+    document.getElementById('loading-msg').textContent='Claude is crafting your questions…';
+    const raw=await callClaude(prompt,3800);
+    const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    questions=parsed.questions;
+    questions.forEach(q=>{q._subject=subj.id;q._subjectName=subj.name;q._level=lvl;});
+    answers=new Array(questions.length).fill(null);
+    results=new Array(questions.length).fill(null);
+    showPracticeView('quiz'); renderQuestion();
+  } catch(e) { showPracticeView('setup'); alert('Error: '+e.message); }
 }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════════
    RENDER QUESTION
-═══════════════════════════════════ */
+══════════════════════════════════════════ */
 function renderQuestion() {
-  const q = questions[current];
-  document.getElementById('progress').style.width = (current / questions.length * 100) + '%';
-  document.getElementById('q-num').textContent  = `Question ${current + 1} of ${questions.length}`;
-  document.getElementById('q-text').textContent = q.question;
-  document.getElementById('feedback-box').innerHTML = '';
-  document.getElementById('score-live').textContent  = `Score: ${score}/${current}`;
-  document.getElementById('submit-btn').style.display  = '';
-  document.getElementById('next-btn').style.display    = 'none';
-  document.getElementById('explain-btn').style.display = 'none';
-  document.getElementById('add-bank-btn').style.display = 'none';
+  const q=questions[current];
+  document.getElementById('progress').style.width=(current/questions.length*100)+'%';
+  document.getElementById('q-num').textContent=`Question ${current+1} of ${questions.length}`;
+  document.getElementById('q-text').textContent=q.question;
+  document.getElementById('feedback-box').innerHTML='';
+  document.getElementById('score-live').textContent=`Score: ${score}/${current}`;
 
-  const badge = document.getElementById('q-topic-badge');
-  if (q.topic) { badge.textContent = q.topic; badge.style.display = ''; }
-  else badge.style.display = 'none';
+  // Button states
+  document.getElementById('submit-btn').style.display='';
+  document.getElementById('next-btn').style.display='none';
+  document.getElementById('explain-btn').style.display='none';
+  document.getElementById('add-bank-btn').style.display='none';
 
-  const body = document.getElementById('q-body');
-  if (q.type === 'mcq') {
-    body.innerHTML = '<div class="options" id="options"></div>';
-    const letters = ['A','B','C','D'];
-    (q.options||[]).forEach((opt, i) => {
-      const div = document.createElement('div');
-      div.className = 'option'; div.dataset.letter = letters[i];
-      div.innerHTML = `<div class="option-letter">${letters[i]}</div><div class="option-text">${opt.replace(/^[A-D]\.\s*/,'')}</div>`;
-      div.addEventListener('click', () => {
-        document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  // Back button: disabled on Q1
+  const backBtn=document.getElementById('back-btn');
+  backBtn.disabled=current===0;
+
+  const badge=document.getElementById('q-topic-badge');
+  if (q.topic){badge.textContent=q.topic;badge.style.display='';}
+  else badge.style.display='none';
+
+  const body=document.getElementById('q-body');
+  if (q.type==='mcq') {
+    body.innerHTML='<div class="options" id="options"></div>';
+    const letters=['A','B','C','D'];
+    (q.options||[]).forEach((opt,i)=>{
+      const div=document.createElement('div');
+      div.className='option'; div.dataset.letter=letters[i];
+      div.innerHTML=`<div class="option-letter">${letters[i]}</div><div class="option-text">${opt.replace(/^[A-D]\.\s*/,'')}</div>`;
+      div.addEventListener('click',()=>{
+        // Only allow selection before submitting
+        if (document.getElementById('submit-btn').style.display==='none') return;
+        document.querySelectorAll('.option').forEach(o=>o.classList.remove('selected'));
         div.classList.add('selected');
       });
       document.getElementById('options').appendChild(div);
     });
   } else {
-    body.innerHTML = `<textarea class="sa-textarea" id="sa-input" placeholder="Write your answer here…"></textarea>`;
+    body.innerHTML=`<textarea class="sa-textarea" id="sa-input" placeholder="Write your answer here…"></textarea>`;
   }
+
+  // Restore previous answer if going back
+  const prev=answers[current];
+  if (prev!==null) restoreAnswer(q, prev);
 }
 
-/* ═══════════════════════════════════
-   SUBMIT
-═══════════════════════════════════ */
-async function submitAnswer() {
-  const q = questions[current];
-  let userAnswer = '';
-
-  if (q.type === 'mcq') {
-    const sel = document.querySelector('.option.selected');
-    if (!sel) { alert('Please select an answer.'); return; }
-    userAnswer = sel.dataset.letter;
+/* Restore answer state when navigating back to an already-answered question */
+function restoreAnswer(q, prevAnswer) {
+  if (q.type==='mcq') {
+    document.querySelectorAll('.option').forEach(o=>{
+      if (o.dataset.letter===q.answer) o.classList.add('correct');
+      else if (o.dataset.letter===prevAnswer&&prevAnswer!==q.answer) o.classList.add('wrong');
+      o.style.pointerEvents='none';
+    });
   } else {
-    userAnswer = document.getElementById('sa-input')?.value.trim() || '';
-    if (!userAnswer) { alert('Please write your answer.'); return; }
+    const ta=document.getElementById('sa-input');
+    if (ta) { ta.value=prevAnswer; ta.disabled=true; }
+  }
+  // Restore feedback
+  const r=results[current];
+  if (r) {
+    document.getElementById('feedback-box').innerHTML=makeFeedback(r.isCorrect,
+      r.isCorrect?(q.type==='mcq'?'Correct!':'Good answer!'):(q.type==='mcq'?`Incorrect — answer is ${q.answer}.`:'Needs improvement.'),
+      q.explanation);
+  }
+  document.getElementById('submit-btn').style.display='none';
+  document.getElementById('next-btn').style.display='';
+  document.getElementById('explain-btn').style.display='';
+  if (r?.isCorrect) document.getElementById('add-bank-btn').style.display='';
+}
+
+/* ══════════════════════════════════════════
+   GO BACK
+══════════════════════════════════════════ */
+function goBack() {
+  if (current===0) return;
+  current--;
+  renderQuestion();
+}
+
+/* ══════════════════════════════════════════
+   SUBMIT
+══════════════════════════════════════════ */
+async function submitAnswer() {
+  const q=questions[current];
+  let userAnswer='';
+  if (q.type==='mcq') {
+    const sel=document.querySelector('.option.selected');
+    if (!sel){alert('Please select an answer.');return;}
+    userAnswer=sel.dataset.letter;
+  } else {
+    userAnswer=document.getElementById('sa-input')?.value.trim()||'';
+    if (!userAnswer){alert('Please write your answer.');return;}
   }
 
-  document.getElementById('submit-btn').style.display = 'none';
-  answers[current] = userAnswer;
-  let isCorrect = false;
-  let feedbackHtml = '';
+  document.getElementById('submit-btn').style.display='none';
+  answers[current]=userAnswer;
+  let isCorrect=false; let feedbackHtml='';
 
-  if (q.type === 'mcq') {
-    isCorrect = userAnswer === q.answer;
-    document.querySelectorAll('.option').forEach(o => {
-      if (o.dataset.letter === q.answer)           o.classList.add('correct');
-      else if (o.dataset.letter === userAnswer && !isCorrect) o.classList.add('wrong');
-      o.style.pointerEvents = 'none';
+  if (q.type==='mcq') {
+    isCorrect=userAnswer===q.answer;
+    document.querySelectorAll('.option').forEach(o=>{
+      if (o.dataset.letter===q.answer) o.classList.add('correct');
+      else if (o.dataset.letter===userAnswer&&!isCorrect) o.classList.add('wrong');
+      o.style.pointerEvents='none';
     });
-    feedbackHtml = makeFeedback(isCorrect, isCorrect ? 'Correct!' : `Incorrect — answer is ${q.answer}.`, q.explanation);
-
+    feedbackHtml=makeFeedback(isCorrect,isCorrect?'Correct!':`Incorrect — answer is ${q.answer}.`,q.explanation);
   } else {
-    document.getElementById('feedback-box').innerHTML =
+    document.getElementById('feedback-box').innerHTML=
       `<div class="feedback info"><div style="display:flex;align-items:center;gap:8px"><div class="spinner spinner-sm"></div>Checking your answer…</div></div>`;
     try {
-      const raw   = await callClaude(`You are a Singapore secondary school teacher grading a student response.
+      const user=USERS[currentUser];
+      const raw=await callClaude(`You are a Singapore ${user.school} teacher grading a student response.
 Question: ${q.question}
 Model answer: ${q.answer}
 Student answer: ${userAnswer}
-Respond ONLY with JSON: {"correct": true_or_false, "feedback": "1-2 sentences of teacher feedback"}`, 300);
-      const grade = JSON.parse(raw.replace(/```json|```/g,'').trim());
-      isCorrect   = grade.correct;
-      feedbackHtml = makeFeedback(isCorrect, isCorrect ? 'Good answer!' : 'Needs improvement.',
-        grade.feedback + `<br><br><strong>Model answer:</strong> ${q.answer}`);
+Respond ONLY with JSON: {"correct":true_or_false,"feedback":"1-2 sentences of teacher feedback"}`,300);
+      const grade=JSON.parse(raw.replace(/```json|```/g,'').trim());
+      isCorrect=grade.correct;
+      feedbackHtml=makeFeedback(isCorrect,isCorrect?'Good answer!':'Needs improvement.',
+        grade.feedback+`<br><br><strong>Model answer:</strong> ${q.answer}`);
     } catch(e) {
-      feedbackHtml = makeFeedback(false, 'Could not auto-grade.', `Model answer: ${q.answer}`);
+      feedbackHtml=makeFeedback(false,'Could not auto-grade.',`Model answer: ${q.answer}`);
     }
+    // disable textarea
+    const ta=document.getElementById('sa-input');
+    if (ta) ta.disabled=true;
   }
 
   if (isCorrect) score++;
-  results[current] = { q, userAnswer, isCorrect };
+  results[current]={q,userAnswer,isCorrect};
+  if (q.topic) recordPerf(q.topic,q._subjectName||q._subject,isCorrect);
+  if (!isCorrect){autoAddError(q,userAnswer);showToast('Added to your Error Bank');}
 
-  // Track performance
-  if (q.topic) recordPerf(q.topic, q._subjectName || q._subject, isCorrect);
-
-  // Auto-add wrong answers to error bank
-  if (!isCorrect) {
-    autoAddError(q, userAnswer);
-    showToast('Added to Error Bank');
-  }
-
-  document.getElementById('feedback-box').innerHTML = feedbackHtml;
-  document.getElementById('next-btn').style.display    = '';
-  document.getElementById('explain-btn').style.display = '';
-  if (isCorrect) document.getElementById('add-bank-btn').style.display = '';
-  document.getElementById('score-live').textContent = `Score: ${score}/${current + 1}`;
+  document.getElementById('feedback-box').innerHTML=feedbackHtml;
+  // Show big next button
+  const nextBtn=document.getElementById('next-btn');
+  nextBtn.style.display='';
+  nextBtn.textContent=current===questions.length-1?'See results →':'Next question →';
+  document.getElementById('explain-btn').style.display='';
+  if (isCorrect) document.getElementById('add-bank-btn').style.display='';
+  document.getElementById('score-live').textContent=`Score: ${score}/${current+1}`;
 }
 
-function makeFeedback(ok, title, body) {
-  return `<div class="feedback ${ok ? 'correct' : 'wrong'}">
-    <div class="feedback-title">${ok ? '✓' : '✗'} ${title}</div>
+function makeFeedback(ok,title,body) {
+  return `<div class="feedback ${ok?'correct':'wrong'}">
+    <div class="feedback-title">${ok?'✓':'✗'} ${title}</div>
     <div class="feedback-body">${body}</div>
   </div>`;
 }
 
 function manualAddToBank() {
-  const q = questions[current];
-  const r = results[current];
-  autoAddError(q, r?.userAnswer || '');
-  document.getElementById('add-bank-btn').style.display = 'none';
-  showToast('Added to Error Bank');
+  const q=questions[current]; const r=results[current];
+  autoAddError(q,r?.userAnswer||'');
+  document.getElementById('add-bank-btn').style.display='none';
+  showToast('Added to your Error Bank');
 }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════════
    EXPLAIN
-═══════════════════════════════════ */
+══════════════════════════════════════════ */
 async function explainCurrent() {
-  const q = questions[current];
-  const btn = document.getElementById('explain-btn');
-  btn.disabled = true; btn.textContent = 'Loading…';
+  const q=questions[current]; const btn=document.getElementById('explain-btn');
+  btn.disabled=true; btn.textContent='Loading…';
   try {
-    const text = await callClaude(`You are a Singapore secondary school teacher.
-A student got this question ${results[current]?.isCorrect ? 'correct' : 'wrong'}.
+    const user=USERS[currentUser];
+    const lvlLabel=user.levels.find(l=>l.id===selectedLevel)?.label||selectedLevel;
+    const text=await callClaude(`You are a Singapore ${user.school} teacher.
+A student got this question ${results[current]?.isCorrect?'correct':'wrong'}.
 Question: ${q.question}
 Correct answer: ${q.answer}
-Topic: ${q.topic || 'general'}
-Give a clear 4-5 sentence explanation that builds deep understanding. Focus on the concept and why, not just the answer.`, 600);
-    document.getElementById('feedback-box').innerHTML +=
+Topic: ${q.topic||'general'}
+Give a clear 4–5 sentence explanation using simple language for ${lvlLabel} students. Focus on the concept and the "why".`,600);
+    document.getElementById('feedback-box').innerHTML+=
       `<div class="feedback blue" style="margin-top:10px">
         <div class="feedback-title">📖 Deep explanation</div>
         <div class="feedback-body">${text}</div>
       </div>`;
-  } catch(e) {}
-  btn.disabled = false; btn.textContent = 'Deep explain';
+  } catch(e){}
+  btn.disabled=false; btn.textContent='Deep explain';
 }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════════
    NAVIGATION
-═══════════════════════════════════ */
+══════════════════════════════════════════ */
 function nextQuestion() {
   current++;
-  if (current >= questions.length) showResults();
+  if (current>=questions.length) showResults();
   else renderQuestion();
 }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════════
    RESULTS
-═══════════════════════════════════ */
+══════════════════════════════════════════ */
 function showResults() {
   showPracticeView('result');
-  document.getElementById('progress').style.width = '100%';
-  const pct   = Math.round(score / questions.length * 100);
-  const grade = pct >= 75 ? 'Excellent — keep it up!'
-              : pct >= 60 ? 'Good — solid work.'
-              : pct >= 45 ? 'Pass — review your errors.'
-              : 'Below pass — practise your error bank!';
-  document.getElementById('final-pct').textContent   = pct + '%';
-  document.getElementById('final-grade').textContent = `${score} of ${questions.length} correct — ${grade}`;
-  document.getElementById('r-correct').textContent   = score;
-  document.getElementById('r-wrong').textContent     = questions.length - score;
-  document.getElementById('r-total').textContent     = questions.length;
-
-  const list = document.getElementById('review-list');
-  list.innerHTML = '';
-  results.forEach((r, i) => {
+  document.getElementById('progress').style.width='100%';
+  const pct=Math.round(score/questions.length*100);
+  const grade=pct>=75?'Excellent — keep it up!':pct>=60?'Good — solid work.':pct>=45?'Pass — review your errors.':'Below pass — practise your error bank!';
+  document.getElementById('final-pct').textContent=pct+'%';
+  document.getElementById('final-grade').textContent=`${score} of ${questions.length} correct — ${grade}`;
+  document.getElementById('r-correct').textContent=score;
+  document.getElementById('r-wrong').textContent=questions.length-score;
+  document.getElementById('r-total').textContent=questions.length;
+  const list=document.getElementById('review-list'); list.innerHTML='';
+  results.forEach((r,i)=>{
     if (!r) return;
-    const item = document.createElement('div');
-    item.className = 'review-item';
-    const preview = r.q.question.length > 70 ? r.q.question.slice(0,70) + '…' : r.q.question;
-    item.innerHTML = `
+    const item=document.createElement('div'); item.className='review-item';
+    const preview=r.q.question.length>70?r.q.question.slice(0,70)+'…':r.q.question;
+    item.innerHTML=`
       <div class="review-header" onclick="this.nextElementSibling.classList.toggle('open')">
-        <div class="review-dot ${r.isCorrect ? 'correct' : 'wrong'}"></div>
+        <div class="review-dot ${r.isCorrect?'correct':'wrong'}"></div>
         <div class="review-q">${i+1}. ${preview}</div>
         <span style="color:var(--text3);font-size:12px">▾</span>
       </div>
       <div class="review-body">
-        <strong>Topic:</strong> ${r.q.topic || '—'}<br>
+        <strong>Topic:</strong> ${r.q.topic||'—'}<br>
         <strong>Your answer:</strong> ${r.userAnswer}<br>
         <strong>Correct answer:</strong> ${r.q.answer}<br>
         <strong>Explanation:</strong> ${r.q.explanation}
@@ -860,75 +1063,58 @@ function showResults() {
   updateBadge();
 }
 
-/* ═══════════════════════════════════
-   ERROR BANK RENDER
-═══════════════════════════════════ */
+/* ══════════════════════════════════════════
+   ERROR BANK
+══════════════════════════════════════════ */
 function renderErrorBank() {
-  const bank    = loadBank();
-  const statsEl = document.getElementById('error-stats');
-  const filterEl = document.getElementById('error-filter');
-  const listEl   = document.getElementById('error-list');
-  const practiceBtn = document.getElementById('practice-errors-btn');
-
-  const total    = bank.length;
-  const mastered = bank.filter(e => e.mastered).length;
-  const pending  = total - mastered;
-
-  statsEl.innerHTML = `
+  const bank=loadBank();
+  const statsEl=document.getElementById('error-stats');
+  const filterEl=document.getElementById('error-filter');
+  const listEl=document.getElementById('error-list');
+  const practiceBtn=document.getElementById('practice-errors-btn');
+  const total=bank.length; const mastered=bank.filter(e=>e.mastered).length; const pending=total-mastered;
+  statsEl.innerHTML=`
     <div class="stat-item"><div class="stat-val">${total}</div><div class="stat-lbl">Total</div></div>
     <div class="stat-item"><div class="stat-val" style="color:var(--red)">${pending}</div><div class="stat-lbl">Pending</div></div>
     <div class="stat-item"><div class="stat-val" style="color:var(--green)">${mastered}</div><div class="stat-lbl">Mastered</div></div>`;
-
-  if (total === 0) {
-    filterEl.innerHTML = '';
-    listEl.innerHTML = '<div class="empty-state"><div class="big">Bank is empty</div>Wrong answers are automatically saved here when you quiz.</div>';
-    practiceBtn.disabled = true;
-    return;
+  if (total===0) {
+    filterEl.innerHTML=''; listEl.innerHTML='<div class="empty-state"><div class="big">Bank is empty</div>Wrong answers are automatically saved here.</div>';
+    practiceBtn.disabled=true; return;
   }
-  practiceBtn.disabled = false;
-
-  // Build subject filters
-  const subjIds = [...new Set(bank.map(e => e.subject))];
-  const filterDefs = [
-    { val:'all', label:'All' },
-    { val:'pending', label:'Pending' },
-    { val:'mastered', label:'Mastered' },
-    ...subjIds.map(id => ({ val:'s:'+id, label: SUBJECTS.find(s=>s.id===id)?.name || id }))
-  ];
-  filterEl.innerHTML = '';
-  filterDefs.forEach(f => {
-    const p = document.createElement('div');
-    p.className = 'filter-pill' + (ebFilter === f.val ? ' active' : '');
-    p.textContent = f.label;
-    p.onclick = () => { ebFilter = f.val; renderErrorBank(); };
+  practiceBtn.disabled=false;
+  const user=USERS[currentUser];
+  const subjIds=[...new Set(bank.map(e=>e.subject))];
+  const filterDefs=[{val:'all',label:'All'},{val:'pending',label:'Pending'},{val:'mastered',label:'Mastered'},
+    ...subjIds.map(id=>({val:'s:'+id,label:user.subjects.find(s=>s.id===id)?.name||id}))];
+  filterEl.innerHTML='';
+  filterDefs.forEach(f=>{
+    const p=document.createElement('div');
+    p.className='filter-pill'+(ebFilter===f.val?' active':'');
+    p.textContent=f.label; p.onclick=()=>{ebFilter=f.val;renderErrorBank();};
     filterEl.appendChild(p);
   });
-
-  // Filter
-  let entries = bank.slice().reverse();
-  if (ebFilter === 'pending')  entries = entries.filter(e => !e.mastered);
-  if (ebFilter === 'mastered') entries = entries.filter(e => e.mastered);
-  if (ebFilter.startsWith('s:')) entries = entries.filter(e => e.subject === ebFilter.slice(2));
-
-  listEl.innerHTML = '';
-  entries.forEach(entry => {
-    const dateStr = entry.addedAt ? new Date(entry.addedAt).toLocaleDateString('en-SG',{day:'numeric',month:'short'}) : '';
-    const preview = entry.question.length > 65 ? entry.question.slice(0,65)+'…' : entry.question;
-    const div = document.createElement('div');
-    div.className = 'error-entry';
-    div.innerHTML = `
+  let entries=bank.slice().reverse();
+  if (ebFilter==='pending') entries=entries.filter(e=>!e.mastered);
+  if (ebFilter==='mastered') entries=entries.filter(e=>e.mastered);
+  if (ebFilter.startsWith('s:')) entries=entries.filter(e=>e.subject===ebFilter.slice(2));
+  listEl.innerHTML='';
+  entries.forEach(entry=>{
+    const dateStr=entry.addedAt?new Date(entry.addedAt).toLocaleDateString('en-SG',{day:'numeric',month:'short'}):'';
+    const preview=entry.question.length>65?entry.question.slice(0,65)+'…':entry.question;
+    const div=document.createElement('div'); div.className='error-entry';
+    div.innerHTML=`
       <div class="error-entry-header" onclick="this.nextElementSibling.classList.toggle('open')">
-        <span class="error-badge ${entry.mastered ? 'mastered' : 'pending'}">${entry.mastered ? 'Mastered' : 'Pending'}</span>
+        <span class="error-badge ${entry.mastered?'mastered':'pending'}">${entry.mastered?'Mastered':'Pending'}</span>
         <div class="error-q">${preview}</div>
-        <div class="error-meta">${entry.subjectName || entry.subject} · ${dateStr}</div>
+        <div class="error-meta">${entry.subjectName||entry.subject} · ${dateStr}</div>
       </div>
       <div class="error-body">
-        <strong>Topic:</strong> ${entry.topic || '—'}<br>
-        <strong>Your answer:</strong> ${entry.userAnswer || '—'}<br>
+        <strong>Topic:</strong> ${entry.topic||'—'}<br>
+        <strong>Your answer:</strong> ${entry.userAnswer||'—'}<br>
         <strong>Correct answer:</strong> ${entry.answer}<br>
         <strong>Explanation:</strong> ${entry.explanation}
         <div class="error-actions">
-          <button class="btn btn-ghost btn-sm" onclick="toggleMastered('${entry.id}')">${entry.mastered ? 'Unmark mastered' : '✓ Mark mastered'}</button>
+          <button class="btn btn-ghost btn-sm" onclick="toggleMastered('${entry.id}')">${entry.mastered?'Unmark mastered':'✓ Mark mastered'}</button>
           <button class="btn btn-danger btn-sm" onclick="deleteError('${entry.id}')">Delete</button>
         </div>
       </div>`;
@@ -937,89 +1123,61 @@ function renderErrorBank() {
 }
 
 function toggleMastered(id) {
-  const bank = loadBank();
-  const e = bank.find(x => String(x.id) === String(id));
-  if (e) { e.mastered = !e.mastered; e.attempts = (e.attempts||0) + 1; }
+  const bank=loadBank(); const e=bank.find(x=>String(x.id)===String(id));
+  if (e){e.mastered=!e.mastered;e.attempts=(e.attempts||0)+1;}
   saveBank(bank); renderErrorBank();
 }
 function deleteError(id) {
-  if (!confirm('Remove this item from the error bank?')) return;
-  saveBank(loadBank().filter(x => String(x.id) !== String(id)));
-  renderErrorBank();
+  if (!confirm('Remove this item from your error bank?')) return;
+  saveBank(loadBank().filter(x=>String(x.id)!==String(id))); renderErrorBank();
 }
 function clearErrorBank() {
-  if (!confirm('Clear the entire error bank? This cannot be undone.')) return;
+  if (!confirm('Clear your entire error bank? This cannot be undone.')) return;
   saveBank([]); renderErrorBank();
 }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════════
    PRACTICE ERROR BANK
-═══════════════════════════════════ */
+══════════════════════════════════════════ */
 async function practiceErrorBank() {
-  const bank = loadBank().filter(e => !e.mastered);
-  if (bank.length === 0) { alert('No pending errors! Great job — all marked as mastered.'); return; }
-
-  const sample = bank.sort(() => Math.random()-.5).slice(0, Math.min(10, bank.length));
-  switchTab('practice');
-  showPracticeView('loading');
-  document.getElementById('loading-msg').textContent = 'Generating new practice questions from your errors…';
-
-  const summary = sample.map((e,i) => `${i+1}. Subject: ${e.subjectName||e.subject} | Topic: ${e.topic} | Original Q: ${e.question} | Your wrong answer: ${e.userAnswer} | Correct: ${e.answer}`).join('\n');
-
-  const prompt = `You are a Singapore secondary school teacher. This student got these questions WRONG:
-
-${summary}
-
-Create ${sample.length} NEW practice questions (different wording, same concepts) to help this student master their weak areas. Vary between mcq and short_answer types.
-
-Return ONLY valid JSON:
-{
-  "questions": [
-    { "id":1, "type":"mcq", "topic":"Topic", "question":"...", "options":["A. ..","B. ..","C. ..","D. .."], "answer":"B", "explanation":"..." },
-    { "id":2, "type":"short_answer", "topic":"Topic", "question":"...", "options":null, "answer":"Key points...", "explanation":"..." }
-  ]
-}`;
-
+  const bank=loadBank().filter(e=>!e.mastered);
+  if (bank.length===0){alert('No pending errors — great job!');return;}
+  const sample=bank.sort(()=>Math.random()-.5).slice(0,Math.min(10,bank.length));
+  switchTab('practice'); showPracticeView('loading');
+  document.getElementById('loading-msg').textContent='Generating practice from your error bank…';
+  const user=USERS[currentUser];
+  const summary=sample.map((e,i)=>`${i+1}. Subject:${e.subjectName}|Topic:${e.topic}|Q:${e.question}|Wrong:${e.userAnswer}|Correct:${e.answer}`).join('\n');
+  const prompt=`You are a Singapore ${user.school} teacher. This student got these questions WRONG:\n${summary}\n\nCreate ${sample.length} NEW practice questions (different wording, same concepts). Vary between mcq and short_answer. Use age-appropriate language.\n\nReturn ONLY valid JSON:\n{"questions":[{"id":1,"type":"mcq","topic":"Topic","question":"...","options":["A. ..","B. ..","C. ..","D. .."],"answer":"B","explanation":"..."}]}`;
   try {
-    const raw    = await callClaude(prompt, 3200);
-    const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
-    questions = parsed.questions;
-    const refSubj = SUBJECTS.find(s => s.id === (sample[0].subject || 'math')) || SUBJECTS[0];
-    questions.forEach(q => { q._subject = sample[0].subject; q._subjectName = sample[0].subjectName || refSubj.name; q._level = sample[0].level || selectedLevel; });
-    current = 0; answers = new Array(questions.length).fill(null); results = new Array(questions.length).fill(null); score = 0;
-    showPracticeView('quiz');
-    renderQuestion();
-  } catch(e) {
-    showPracticeSetup();
-    alert('Error: ' + e.message);
-  }
+    const raw=await callClaude(prompt,3200);
+    const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    questions=parsed.questions;
+    const refSubj=user.subjects.find(s=>s.id===(sample[0].subject||user.subjects[0].id))||user.subjects[0];
+    questions.forEach(q=>{q._subject=sample[0].subject;q._subjectName=sample[0].subjectName||refSubj.name;q._level=sample[0].level||selectedLevel;});
+    current=0;answers=new Array(questions.length).fill(null);results=new Array(questions.length).fill(null);score=0;
+    showPracticeView('quiz');renderQuestion();
+  } catch(e){showPracticeSetup();alert('Error: '+e.message);}
 }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════════
    WEAK AREAS
-═══════════════════════════════════ */
+══════════════════════════════════════════ */
 function renderWeakAreas() {
-  const perf  = loadPerf();
-  const keys  = Object.keys(perf);
-  const listEl = document.getElementById('weak-topic-list');
-  const cardEl = document.getElementById('weak-practice-card');
-
-  if (keys.length === 0) {
-    listEl.innerHTML = '<div class="empty-state"><div class="big">No data yet</div>Complete quizzes to see performance by topic.</div>';
-    cardEl.style.display = 'none';
-    return;
+  const perf=loadPerf(); const keys=Object.keys(perf);
+  const listEl=document.getElementById('weak-topic-list');
+  const cardEl=document.getElementById('weak-practice-card');
+  if (keys.length===0){
+    listEl.innerHTML='<div class="empty-state"><div class="big">No data yet</div>Complete quizzes to see your performance by topic.</div>';
+    cardEl.style.display='none';return;
   }
-
-  cardEl.style.display = '';
-  const entries = keys.map(k => perf[k]).sort((a,b) => (a.correct/a.total) - (b.correct/b.total));
-
-  listEl.innerHTML = '';
-  entries.forEach(e => {
-    const pct = Math.round(e.correct / e.total * 100);
-    const barClass = pct >= 70 ? 'high' : pct >= 50 ? 'mid' : 'low';
-    const row = document.createElement('div');
-    row.className = 'weak-row';
-    row.innerHTML = `
+  cardEl.style.display='';
+  const entries=keys.map(k=>perf[k]).sort((a,b)=>(a.correct/a.total)-(b.correct/b.total));
+  listEl.innerHTML='';
+  entries.forEach(e=>{
+    const pct=Math.round(e.correct/e.total*100);
+    const barClass=pct>=70?'high':pct>=50?'mid':'low';
+    const row=document.createElement('div'); row.className='weak-row';
+    row.innerHTML=`
       <div style="flex:1">
         <div class="weak-name">${e.topic}</div>
         <div class="weak-sub">${e.subject} · ${e.total} attempt${e.total!==1?'s':''}</div>
@@ -1031,32 +1189,30 @@ function renderWeakAreas() {
 }
 
 async function practiceWeakAreas() {
-  const perf  = loadPerf();
-  const weak  = Object.values(perf).sort((a,b) => (a.correct/a.total)-(b.correct/b.total)).filter(e => (e.correct/e.total) < 0.7).slice(0,5);
-  if (weak.length === 0) { alert('No weak areas found — your scores are all 70%+! Keep going.'); return; }
-
-  // Find matching subject
-  const subjName = weak[0].subject;
-  const subj = SUBJECTS.find(s => s.name === subjName) || selectedSubject || SUBJECTS[0];
-  const numQ = document.getElementById('weak-num-q').value;
-
-  await startQuiz({ numQ, diff:'Standard', qType:'mixed', subject: subj, level: selectedLevel, topics: weak.map(w => w.topic) });
+  const perf=loadPerf();
+  const weak=Object.values(perf).sort((a,b)=>(a.correct/a.total)-(b.correct/b.total)).filter(e=>(e.correct/e.total)<0.7).slice(0,5);
+  if (weak.length===0){alert('No weak areas — all topics are 70%+! Keep it up.');return;}
+  const user=USERS[currentUser];
+  const subj=user.subjects.find(s=>s.name===weak[0].subject)||selectedSubject||user.subjects[0];
+  const numQ=document.getElementById('weak-num-q').value;
+  await startQuiz({numQ,diff:'Standard',qType:'mixed',subject:subj,level:selectedLevel,topics:weak.map(w=>w.topic)});
 }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════════
    TOAST
-═══════════════════════════════════ */
+══════════════════════════════════════════ */
 function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.style.opacity = '1';
-  clearTimeout(t._t);
-  t._t = setTimeout(() => t.style.opacity = '0', 2000);
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',2000);
 }
 
-/* ═══════════════════════════════════
+/* ══════════════════════════════════════════
    BOOT
-═══════════════════════════════════ */
-init();
+══════════════════════════════════════════ */
+if (apiKey) document.getElementById('api-key').value=apiKey;
+const lastUser=localStorage.getItem('sg_last_user');
+if (lastUser&&USERS[lastUser]) selectUser(lastUser);
 </script>
 </body>
 </html>
