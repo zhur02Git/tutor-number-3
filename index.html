@@ -345,7 +345,7 @@
       </div>
 
       <div class="card" id="topic-card" style="display:none">
-        <div class="card-label">Topic / skill area <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(select specific topics, or leave as All)</span></div>
+        <div class="card-label">Topic / skill area <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0">(click a topic to see example questions, or leave as All)</span></div>
         <div class="topic-pills" id="topic-pills"></div>
       </div>
 
@@ -492,42 +492,122 @@
 
 <script>
 /* ══════════════════════════════════════════
-   SUBJECT EXAMPLES (shown on card click)
+   TOPIC EXAMPLES — shown when a topic pill is clicked
+   Key = exact topic string from USERS subjects.topics
 ══════════════════════════════════════════ */
-const SUBJECT_EXAMPLES = {
-  ziyan: {
-    math: [
-      { type:'mcq', q:'Meilin has 3/4 of a pizza. She eats 1/3 of her share. What fraction of the whole pizza did she eat?', opts:['A. 1/4','B. 1/3','C. 1/2','D. 2/3'], ans:'A' },
-      { type:'short', q:'A rectangle has a length of 12 cm and a width of 7 cm. What is its perimeter?', ans:'38 cm' }
-    ],
-    sci: [
-      { type:'mcq', q:'Which part of a plant makes food using sunlight?', opts:['A. Root','B. Stem','C. Leaf','D. Flower'], ans:'C' },
-      { type:'short', q:'Name two ways heat can travel from one object to another.', ans:'Conduction and radiation' }
-    ],
-    eng: [
-      { type:'mcq', q:'Choose the correct word: "She ___ to school every day by bus."', opts:['A. go','B. goes','C. gone','D. going'], ans:'B' },
-      { type:'short', q:'Write a sentence using the word "anxious" to show you understand its meaning.', ans:'e.g. She was anxious about her exam results.' }
-    ],
-    chi: [
-      { type:'mcq', q:'下面哪个词语的意思是"非常高兴"？', opts:['A. 伤心','B. 害怕','C. 欣喜若狂','D. 担心'], ans:'C' },
-      { type:'short', q:'用"虽然……但是……"造一个句子。', ans:'例如：虽然今天下雨，但是我们还是去上学了。' }
-    ]
-  },
-  zonghan: {
-    math: [
-      { type:'mcq', q:'Solve for x: 3x + 7 = 22', opts:['A. x = 3','B. x = 5','C. x = 7','D. x = 9'], ans:'B' },
-      { type:'short', q:'A cylinder has radius 5 cm and height 10 cm. Find its volume. (Take π = 3.14)', ans:'785 cm³' }
-    ],
-    chem: [
-      { type:'mcq', q:'Which of the following is a physical change?', opts:['A. Burning wood','B. Rusting iron','C. Melting ice','D. Cooking an egg'], ans:'C' },
-      { type:'short', q:'Write the word equation for the reaction between hydrochloric acid and sodium hydroxide.', ans:'Hydrochloric acid + Sodium hydroxide → Sodium chloride + Water' }
-    ],
-    phys: [
-      { type:'mcq', q:'A car travels 120 km in 2 hours. What is its average speed?', opts:['A. 40 km/h','B. 60 km/h','C. 80 km/h','D. 120 km/h'], ans:'B' },
-      { type:'short', q:'State Newton\'s First Law of Motion in your own words.', ans:'An object at rest stays at rest, and an object in motion stays in motion, unless acted on by an external force.' }
-    ],
-    eng: [
-      { type:'mcq', q:'Choose the correct sentence:', opts:['A. Neither of the boys are ready.','B. Neither of the boys is ready.','C. Neither of the boys were ready.','D. Neither of the boys was ready.'], ans:'B' },
+const TOPIC_EXAMPLES = {
+  /* ── Ziyan · Math ── */
+  'Whole Numbers':            [ {type:'mcq',q:'What is 6,048 ÷ 8?',opts:['A. 756','B. 706','C. 760','D. 756'],ans:'A'}, {type:'short',q:'Write six thousand and forty-eight in numerals.',ans:'6,048'} ],
+  'Addition & Subtraction':   [ {type:'mcq',q:'7,305 − 2,867 = ?',opts:['A. 4,338','B. 4,438','C. 4,348','D. 4,448'],ans:'B'}, {type:'short',q:'A school has 3,210 boys and 2,895 girls. How many pupils are there altogether?',ans:'6,105'} ],
+  'Multiplication & Division':[ {type:'mcq',q:'48 × 25 = ?',opts:['A. 1,100','B. 1,200','C. 1,150','D. 1,250'],ans:'B'}, {type:'short',q:'Share 252 stickers equally among 9 children. How many does each child get?',ans:'28 stickers'} ],
+  'Fractions':                [ {type:'mcq',q:'Which fraction is the largest? 1/2, 2/5, 3/8',opts:['A. 1/2','B. 2/5','C. 3/8','D. All equal'],ans:'A'}, {type:'short',q:'Ali ate 2/5 of a cake and Bala ate 1/3. Who ate more? Show your working.',ans:'Ali ate more. 2/5 = 6/15, 1/3 = 5/15, so 2/5 > 1/3.'} ],
+  'Decimals':                 [ {type:'mcq',q:'0.6 + 0.45 = ?',opts:['A. 0.11','B. 1.05','C. 0.105','D. 1.5'],ans:'B'}, {type:'short',q:'Round 4.375 to 2 decimal places.',ans:'4.38'} ],
+  'Money':                    [ {type:'mcq',q:'Siti has $10.00. She buys a book for $4.85. How much change does she get?',opts:['A. $4.15','B. $5.15','C. $5.85','D. $6.15'],ans:'B'}, {type:'short',q:'3 pens cost $2.55. How much do 7 pens cost?',ans:'$5.95'} ],
+  'Measurement – Length & Mass':[ {type:'mcq',q:'A rope is 3 m 45 cm long. What is its length in cm?',opts:['A. 345 cm','B. 354 cm','C. 3045 cm','D. 3,450 cm'],ans:'A'}, {type:'short',q:'A bag weighs 1 kg 350 g. Express this in grams.',ans:'1,350 g'} ],
+  'Measurement – Time':       [ {type:'mcq',q:'A movie starts at 2:45 pm and lasts 1 h 50 min. When does it end?',opts:['A. 4:25 pm','B. 4:35 pm','C. 4:15 pm','D. 3:35 pm'],ans:'B'}, {type:'short',q:'How many minutes are there from 10:20 am to 12:05 pm?',ans:'105 minutes'} ],
+  'Area & Perimeter':         [ {type:'mcq',q:'A square has a perimeter of 36 cm. What is its area?',opts:['A. 81 cm²','B. 36 cm²','C. 72 cm²','D. 64 cm²'],ans:'A'}, {type:'short',q:'A rectangle has length 9 cm and area 54 cm². Find its perimeter.',ans:'30 cm'} ],
+  'Geometry – Shapes & Angles':[ {type:'mcq',q:'How many lines of symmetry does a regular hexagon have?',opts:['A. 3','B. 4','C. 5','D. 6'],ans:'D'}, {type:'short',q:'Name two properties of a rhombus.',ans:'All four sides are equal; opposite angles are equal.'} ],
+  'Data Analysis – Tables & Graphs':[ {type:'mcq',q:'A bar graph shows 12 boys and 8 girls chose red. What fraction of the total chose red?',opts:['A. 1/2','B. 2/5','C. 3/5','D. 1/5'],ans:'B'}, {type:'short',q:'The mean of 5 numbers is 12. What is their total sum?',ans:'60'} ],
+  'Word Problems & Heuristics':[ {type:'mcq',q:'Jan had twice as many marbles as Ken. After Jan gave Ken 15 marbles, they had the same number. How many did Jan have at first?',opts:['A. 30','B. 45','C. 60','D. 15'],ans:'C'}, {type:'short',q:'3 similar bags and 1 box weigh 7 kg. 1 bag and 1 box weigh 3 kg. Find the weight of 1 bag.',ans:'2 kg'} ],
+
+  /* ── Ziyan · Science ── */
+  'Living & Non-Living Things':[ {type:'mcq',q:'Which is NOT a characteristic of living things?',opts:['A. Grow','B. Reproduce','C. Feel hot or cold','D. Respond to stimuli'],ans:'C'}, {type:'short',q:'Give two differences between a seed and a pebble.',ans:'A seed can germinate and grow; a pebble cannot. A seed needs water and light; a pebble does not.'} ],
+  'Plants & Their Parts':     [ {type:'mcq',q:'Which part of the plant transports water from the roots to the leaves?',opts:['A. Petals','B. Stem','C. Sepals','D. Fruit'],ans:'B'}, {type:'short',q:'State the function of roots in a plant.',ans:'Roots absorb water and minerals from the soil and anchor the plant.'} ],
+  'Animals & Classification': [ {type:'mcq',q:'Which animal is a mammal?',opts:['A. Crocodile','B. Salmon','C. Dolphin','D. Eagle'],ans:'C'}, {type:'short',q:'Name one difference between insects and spiders.',ans:'Insects have 6 legs and 3 body parts; spiders have 8 legs and 2 body parts.'} ],
+  'Human Body Systems':       [ {type:'mcq',q:'Which organ pumps blood around the body?',opts:['A. Lungs','B. Liver','C. Heart','D. Kidney'],ans:'C'}, {type:'short',q:'What is the role of the lungs in the human body?',ans:'The lungs take in oxygen and expel carbon dioxide during breathing.'} ],
+  'Materials & Properties':   [ {type:'mcq',q:'Which material is the best conductor of heat?',opts:['A. Wood','B. Plastic','C. Rubber','D. Iron'],ans:'D'}, {type:'short',q:'Why is rubber used to make the handles of electrical tools?',ans:'Rubber is a poor conductor of electricity (an insulator), so it keeps the user safe.'} ],
+  'Water Cycle':              [ {type:'mcq',q:'What process forms clouds?',opts:['A. Evaporation','B. Condensation','C. Precipitation','D. Run-off'],ans:'B'}, {type:'short',q:'Describe what happens to water during evaporation.',ans:'Water changes from liquid to water vapour (gas) when heated by the sun.'} ],
+  'Weather & Environment':    [ {type:'mcq',q:'Which instrument measures rainfall?',opts:['A. Thermometer','B. Wind vane','C. Rain gauge','D. Barometer'],ans:'C'}, {type:'short',q:'State one way humans can reduce air pollution.',ans:'Use public transport instead of private cars / plant more trees.'} ],
+  'Light & Shadows':          [ {type:'mcq',q:'A shadow is longest when the sun is —',opts:['A. Directly overhead','B. Low on the horizon','C. Behind a cloud','D. At noon'],ans:'B'}, {type:'short',q:'Why does an opaque object cast a shadow?',ans:'Opaque objects do not allow light to pass through, so light is blocked and a shadow forms.'} ],
+  'Heat & Temperature':       [ {type:'mcq',q:'Which material is the best thermal insulator?',opts:['A. Copper','B. Water','C. Wool','D. Steel'],ans:'C'}, {type:'short',q:'What does a thermometer measure?',ans:'A thermometer measures temperature.'} ],
+  'Forces & Magnets':         [ {type:'mcq',q:'Which force slows down a sliding book on a table?',opts:['A. Gravity','B. Magnetic force','C. Friction','D. Elastic force'],ans:'C'}, {type:'short',q:'State one use of magnets in everyday life.',ans:'Magnets are used in fridge door seals to keep the door closed.'} ],
+  'Electricity & Simple Circuits':[ {type:'mcq',q:'What is needed to make a bulb light up in a circuit?',opts:['A. An open switch','B. A complete circuit','C. Two batteries in parallel','D. A conductor only'],ans:'B'}, {type:'short',q:'What happens to the brightness of a bulb if you add another battery in series?',ans:'The bulb becomes brighter because more electrical energy is supplied.'} ],
+  'Ecosystems & Food Chains': [ {type:'mcq',q:'In the food chain: Grass → Grasshopper → Frog → Snake, what is the producer?',opts:['A. Grasshopper','B. Snake','C. Frog','D. Grass'],ans:'D'}, {type:'short',q:'What would happen to the grasshopper population if all the frogs died? Explain.',ans:'The grasshopper population would increase because frogs are predators that eat grasshoppers.'} ],
+
+  /* ── Ziyan · English ── */
+  'Vocabulary – Word Meaning':[ {type:'mcq',q:'The word "enormous" means —',opts:['A. Very small','B. Very old','C. Very large','D. Very fast'],ans:'C'}, {type:'short',q:'Write the meaning of the word "anxious" as used in this sentence: "She was anxious about her exam results."',ans:'Anxious means worried or nervous.'} ],
+  'Vocabulary – Synonyms & Antonyms':[ {type:'mcq',q:'Which word is a synonym of "brave"?',opts:['A. Cowardly','B. Courageous','C. Careful','D. Clumsy'],ans:'B'}, {type:'short',q:'Write one antonym for the word "generous".',ans:'Stingy / selfish / mean'} ],
+  'Grammar – Tenses':         [ {type:'mcq',q:'Choose the correct tense: "By the time we arrived, she ___ already left."',opts:['A. has','B. have','C. had','D. was'],ans:'C'}, {type:'short',q:'Rewrite in past tense: "The children run happily in the park."',ans:'"The children ran happily in the park."'} ],
+  'Grammar – Nouns & Pronouns':[ {type:'mcq',q:'Which sentence uses a pronoun correctly?',opts:['A. Him and I went.','B. He and I went.','C. Him and me went.','D. He and me went.'],ans:'B'}, {type:'short',q:'Identify all the nouns in: "The clever fox hid behind the old oak tree."',ans:'fox, tree (and oak as a noun modifier)'} ],
+  'Grammar – Adjectives & Adverbs':[ {type:'mcq',q:'"She spoke ___." Which word correctly completes the sentence?',opts:['A. soft','B. softly','C. soften','D. softness'],ans:'B'}, {type:'short',q:'Add two adjectives to improve: "The dog barked at the stranger."',ans:'e.g. "The fierce, black dog barked at the suspicious stranger."'} ],
+  'Grammar – Prepositions':   [ {type:'mcq',q:'"The cat jumped ___ the table." Which preposition fits best?',opts:['A. in','B. on','C. at','D. of'],ans:'B'}, {type:'short',q:'Fill in the blank: "She has been waiting ___ two hours."',ans:'for'} ],
+  'Punctuation':              [ {type:'mcq',q:'Which sentence is punctuated correctly?',opts:['A. "Help!" she cried','B. "Help!" She cried.','C. "help!" she cried.','D. "Help!" she cried.'],ans:'D'}, {type:'short',q:'Add the correct punctuation: "Mum asked where are you going"',ans:'"Mum asked, \'Where are you going?\'"'} ],
+  'Comprehension – Reading & Answering':[ {type:'short',q:'What does it mean to "infer" from a passage?',ans:'To infer means to work out information that is not directly stated, using clues from the text.'}, {type:'short',q:'What is the difference between a "literal" and an "inferential" question?',ans:'A literal question has an answer directly in the text; an inferential question requires reading between the lines.'} ],
+  'Visual Text Comprehension':[ {type:'mcq',q:'In a poster, where is the most important information usually placed?',opts:['A. At the bottom','B. In the smallest font','C. At the top or centre','D. In a footnote'],ans:'C'}, {type:'short',q:'Name two features of a poster that help convey its message.',ans:'Headline / bold title; images or illustrations; short key points; contact details.'} ],
+  'Composition – Narrative Writing':[ {type:'short',q:'What is the purpose of a "hook" at the start of a composition?',ans:'A hook grabs the reader\'s attention and makes them want to read on.'}, {type:'short',q:'Write a one-sentence story opener using action.',ans:'e.g. "Heart pounding, I sprinted towards the burning building without looking back."'} ],
+  'Oral Communication':       [ {type:'short',q:'Name two things you should do when giving a spoken presentation.',ans:'Maintain eye contact with the audience; speak clearly and at an appropriate pace.'}, {type:'short',q:'What does "enunciate" mean in the context of speaking?',ans:'To enunciate means to pronounce words clearly and distinctly.'} ],
+  'Editing & Error Correction':[ {type:'mcq',q:'Find the error: "She don\'t like broccoli."',opts:['A. She → Her','B. don\'t → doesn\'t','C. like → likes','D. No error'],ans:'B'}, {type:'short',q:'Correct the sentence: "The students has finished their homework already."',ans:'"The students have finished their homework already."'} ],
+
+  /* ── Ziyan · Chinese ── */
+  '词汇 – 词语理解':          [ {type:'mcq',q:'"他非常失望。"句中"失望"的意思是——',opts:['A. 非常高兴','B. 十分愤怒','C. 感到伤心沮丧','D. 觉得害怕'],ans:'C'}, {type:'short',q:'用"骄傲"造一个句子。',ans:'例如：他因为帮助了别人而感到骄傲。'} ],
+  '词汇 – 近义词与反义词':    [ {type:'mcq',q:'"美丽"的近义词是——',opts:['A. 丑陋','B. 漂亮','C. 普通','D. 奇怪'],ans:'B'}, {type:'short',q:'写出"勇敢"的反义词。',ans:'胆小 / 懦弱'} ],
+  '语法 – 句子结构':          [ {type:'mcq',q:'下面哪个句子是正确的？',opts:['A. 我吃了饭已经。','B. 已经我吃了饭。','C. 我已经吃了饭。','D. 吃了饭我已经。'],ans:'C'}, {type:'short',q:'把下面两个句子合并成一句话：小明喜欢踢足球。小明喜欢游泳。',ans:'小明喜欢踢足球，也喜欢游泳。'} ],
+  '语法 – 标点符号':          [ {type:'mcq',q:'在对话中，引用的话应该用哪种标点符号？',opts:['A. 句号','B. 引号','C. 顿号','D. 分号'],ans:'B'}, {type:'short',q:'给下面的句子加上正确的标点符号：妈妈问你今天学校里发生了什么',ans:'妈妈问："你今天学校里发生了什么？"'} ],
+  '阅读理解':                 [ {type:'short',q:'阅读理解题中，什么是"概括段落大意"？',ans:'概括段落大意就是用简短的一两句话说出这段话的主要内容。'}, {type:'short',q:'阅读时，"联系上下文"猜词语意思有什么用处？',ans:'通过联系上下文，我们可以根据文章提供的线索来猜测不认识的词语的意思，帮助理解文章。'} ],
+  '看图写话':                 [ {type:'short',q:'写看图作文时，应该注意哪两件事？',ans:'仔细观察图画中的人物、地点和动作；用完整的句子描述图中发生的事情，并加入想象和感受。'}, {type:'short',q:'在看图写作中，怎样让故事更生动？',ans:'可以加入人物的对话、心理活动，以及生动的形容词和动词，使故事更具体有趣。'} ],
+  '书写 – 汉字笔顺':          [ {type:'mcq',q:'"永"字共有几画？',opts:['A. 4','B. 5','C. 8','D. 6'],ans:'B'}, {type:'short',q:'"先横后竖"是汉字笔顺的什么规则？请举一个例子。',ans:'这是汉字书写中先写横笔再写竖笔的规则，例如"十"字，先写横，再写竖。'} ],
+  '成语运用':                 [ {type:'mcq',q:'"半途而废"的意思是——',opts:['A. 努力到底','B. 中途放弃','C. 认真学习','D. 快速完成'],ans:'B'}, {type:'short',q:'用成语"废寝忘食"造一个句子。',ans:'例如：为了准备比赛，他废寝忘食地练习。'} ],
+  '造句练习':                 [ {type:'short',q:'用"不但……而且……"造一个句子。',ans:'例如：她不但学习认真，而且非常热心帮助同学。'}, {type:'short',q:'用"虽然……但是……"造一个句子。',ans:'例如：虽然今天下大雨，但是我们还是按时到达学校。'} ],
+  '听说能力':                 [ {type:'short',q:'在口语交际中，为什么要注意听对方说话？',ans:'认真聆听可以帮助我们正确理解对方的意思，避免误解，也是尊重对方的表现。'}, {type:'short',q:'在朗读课文时，应该注意哪些方面？',ans:'注意语速（不太快也不太慢）、音量、感情表达，以及正确的停顿和声调。'} ],
+
+  /* ── Zonghan · Math ── */
+  'Whole Numbers & Integers': [ {type:'mcq',q:'Evaluate: −8 + 15 − (−3)',opts:['A. 4','B. 10','C. 20','D. −4'],ans:'B'}, {type:'short',q:'List all integers between −4 and 3 (exclusive).',ans:'−3, −2, −1, 0, 1, 2'} ],
+  'Fractions & Decimals':     [ {type:'mcq',q:'0.125 as a fraction in its simplest form is —',opts:['A. 1/4','B. 1/8','C. 1/6','D. 1/5'],ans:'B'}, {type:'short',q:'Calculate: 2⅓ × 1½',ans:'3½'} ],
+  'Ratio & Proportion':       [ {type:'mcq',q:'A:B = 3:5 and B:C = 2:7. Find A:B:C.',opts:['A. 6:10:35','B. 3:5:7','C. 6:10:7','D. 3:2:7'],ans:'A'}, {type:'short',q:'$240 is divided in the ratio 3:5. Find the larger share.',ans:'$150'} ],
+  'Percentages':              [ {type:'mcq',q:'A jacket costs $80 after a 20% discount. What was its original price?',opts:['A. $96','B. $100','C. $88','D. $64'],ans:'B'}, {type:'short',q:'Express 45/60 as a percentage.',ans:'75%'} ],
+  'Algebra – Expressions':    [ {type:'mcq',q:'Simplify: 3x + 4y − x + 2y',opts:['A. 2x + 6y','B. 4x + 2y','C. 2x + 2y','D. 4x + 6y'],ans:'A'}, {type:'short',q:'If a = 3 and b = −2, evaluate 2a² − 3b.',ans:'2(9) − 3(−2) = 18 + 6 = 24'} ],
+  'Algebra – Equations & Inequalities':[ {type:'mcq',q:'Solve: 2(x − 3) = 10',opts:['A. x = 4','B. x = 8','C. x = 2','D. x = 5'],ans:'B'}, {type:'short',q:'Solve the inequality: 3x + 1 > 10',ans:'x > 3'} ],
+  'Geometry – Angles & Lines':[ {type:'mcq',q:'Two parallel lines are cut by a transversal. The co-interior angles sum to —',opts:['A. 90°','B. 180°','C. 360°','D. 270°'],ans:'B'}, {type:'short',q:'Find the value of x if angles on a straight line are: 3x, 2x, and 40°.',ans:'3x + 2x + 40 = 180 → 5x = 140 → x = 28'} ],
+  'Geometry – Triangles & Polygons':[ {type:'mcq',q:'The sum of interior angles of a hexagon is —',opts:['A. 540°','B. 720°','C. 900°','D. 360°'],ans:'B'}, {type:'short',q:'In triangle ABC, angle A = 65° and angle B = 48°. Find angle C.',ans:'angle C = 180 − 65 − 48 = 67°'} ],
+  'Perimeter, Area & Volume': [ {type:'mcq',q:'A cube has side length 4 cm. What is its volume?',opts:['A. 16 cm³','B. 32 cm³','C. 48 cm³','D. 64 cm³'],ans:'D'}, {type:'short',q:'Find the area of a trapezium with parallel sides 8 cm and 12 cm, and height 5 cm.',ans:'Area = ½ × (8+12) × 5 = 50 cm²'} ],
+  'Statistics & Data Handling':[ {type:'mcq',q:'For the data set {3, 7, 7, 9, 14}, the median is —',opts:['A. 7','B. 8','C. 9','D. 14'],ans:'A'}, {type:'short',q:'Find the mean of: 12, 15, 8, 20, 10.',ans:'(12+15+8+20+10) ÷ 5 = 65 ÷ 5 = 13'} ],
+  'Graphs & Functions':       [ {type:'mcq',q:'The gradient of a line passing through (0,3) and (4,11) is —',opts:['A. 1','B. 2','C. 3','D. 4'],ans:'B'}, {type:'short',q:'A line has equation y = 3x − 2. What is its y-intercept?',ans:'y-intercept = −2 (the point (0, −2))'} ],
+  'Number Patterns & Sequences':[ {type:'mcq',q:'What is the next term in: 2, 6, 18, 54, ___?',opts:['A. 108','B. 162','C. 108','D. 216'],ans:'B'}, {type:'short',q:'Find the 10th term of the arithmetic sequence: 4, 9, 14, 19, …',ans:'a₁₀ = 4 + (10−1)×5 = 4 + 45 = 49'} ],
+
+  /* ── Zonghan · Chemistry ── */
+  'Measurement & Scientific Units':[ {type:'mcq',q:'Which unit measures amount of substance?',opts:['A. Kelvin','B. Mole','C. Pascal','D. Joule'],ans:'B'}, {type:'short',q:'Convert 2.5 dm³ to cm³.',ans:'2.5 dm³ = 2,500 cm³'} ],
+  'States of Matter & Kinetic Theory':[ {type:'mcq',q:'When a gas is compressed, its particles —',opts:['A. Move slower','B. Get bigger','C. Are forced closer together','D. Lose energy'],ans:'C'}, {type:'short',q:'Explain why gases can be compressed but liquids cannot.',ans:'Gas particles are far apart with large empty spaces between them, so they can be pushed closer. Liquid particles are already close together.'} ],
+  'Atomic Structure':         [ {type:'mcq',q:'The atomic number of an element equals —',opts:['A. Number of neutrons','B. Number of protons','C. Mass number','D. Number of electrons in outer shell'],ans:'B'}, {type:'short',q:'An atom of sodium has atomic number 11 and mass number 23. How many neutrons does it have?',ans:'23 − 11 = 12 neutrons'} ],
+  'The Periodic Table':       [ {type:'mcq',q:'Elements in the same group of the periodic table have the same number of —',opts:['A. Protons','B. Neutrons','C. Valence electrons','D. Mass number'],ans:'C'}, {type:'short',q:'State the trend in reactivity as you go down Group 1.',ans:'Reactivity increases down Group 1 as the outer electron is further from the nucleus and more easily lost.'} ],
+  'Chemical Bonding':         [ {type:'mcq',q:'Which type of bonding occurs in sodium chloride (NaCl)?',opts:['A. Covalent','B. Metallic','C. Ionic','D. Hydrogen'],ans:'C'}, {type:'short',q:'Explain why covalent compounds generally have low melting points.',ans:'Covalent molecules are held together by weak intermolecular forces, so little energy is needed to separate them.'} ],
+  'Chemical Formulae & Naming':[ {type:'mcq',q:'What is the formula of aluminium oxide?',opts:['A. AlO','B. Al₂O₃','C. AlO₂','D. Al₃O₂'],ans:'B'}, {type:'short',q:'Name the compound CuSO₄.',ans:'Copper(II) sulfate'} ],
+  'Chemical Equations & Balancing':[ {type:'mcq',q:'Which equation is correctly balanced? H₂ + O₂ → H₂O',opts:['A. H₂ + O₂ → H₂O','B. 2H₂ + O₂ → 2H₂O','C. H₂ + 2O → H₂O','D. 2H₂ + 2O₂ → 2H₂O'],ans:'B'}, {type:'short',q:'Balance this equation: Fe + O₂ → Fe₂O₃',ans:'4Fe + 3O₂ → 2Fe₂O₃'} ],
+  'Acids, Bases & Salts':     [ {type:'mcq',q:'What is the pH of a neutral solution?',opts:['A. 0','B. 7','C. 14','D. 5'],ans:'B'}, {type:'short',q:'Write the word equation for the reaction of zinc with hydrochloric acid.',ans:'Zinc + Hydrochloric acid → Zinc chloride + Hydrogen'} ],
+  'Oxidation & Reduction':    [ {type:'mcq',q:'Oxidation is defined as —',opts:['A. Gain of electrons','B. Loss of electrons','C. Gain of protons','D. Loss of neutrons'],ans:'B'}, {type:'short',q:'In the reaction 2Mg + O₂ → 2MgO, which substance is oxidised?',ans:'Magnesium (Mg) is oxidised — it loses electrons / gains oxygen.'} ],
+  'Separation Techniques':    [ {type:'mcq',q:'Which technique separates a mixture of two miscible liquids with different boiling points?',opts:['A. Filtration','B. Evaporation','C. Fractional distillation','D. Chromatography'],ans:'C'}, {type:'short',q:'Describe how you would separate sand from a sand-salt mixture.',ans:'Dissolve in water; filter to remove sand; evaporate water to obtain salt.'} ],
+  'Metals & Reactivity Series':[ {type:'mcq',q:'Which metal reacts most vigorously with cold water?',opts:['A. Iron','B. Copper','C. Potassium','D. Zinc'],ans:'C'}, {type:'short',q:'Explain why gold does not react with oxygen in the air.',ans:'Gold is very low in the reactivity series and is chemically unreactive.'} ],
+  'Air, Atmosphere & Environment':[ {type:'mcq',q:'Approximately what percentage of air is nitrogen?',opts:['A. 21%','B. 78%','C. 1%','D. 50%'],ans:'B'}, {type:'short',q:'State two gases that contribute to the greenhouse effect.',ans:'Carbon dioxide (CO₂) and methane (CH₄)'} ],
+
+  /* ── Zonghan · Physics ── */
+  'Kinematics – Speed & Velocity':[ {type:'mcq',q:'A car travels 300 m in 20 s. What is its average speed?',opts:['A. 10 m/s','B. 15 m/s','C. 20 m/s','D. 6,000 m/s'],ans:'B'}, {type:'short',q:'State the difference between speed and velocity.',ans:'Speed is how fast an object moves; velocity is speed in a specified direction (a vector).'} ],
+  "Forces & Newton's Laws":   [ {type:'mcq',q:"Newton's Second Law states that force equals —",opts:['A. mass × velocity','B. mass × acceleration','C. mass × distance','D. mass × speed'],ans:'B'}, {type:'short',q:'A 5 kg object accelerates at 3 m/s². What net force acts on it?',ans:'F = ma = 5 × 3 = 15 N'} ],
+  'Work, Energy & Power':     [ {type:'mcq',q:'A force of 20 N moves an object 5 m in its direction. How much work is done?',opts:['A. 4 J','B. 25 J','C. 100 J','D. 4 J'],ans:'C'}, {type:'short',q:'State the principle of conservation of energy.',ans:'Energy cannot be created or destroyed; it can only be converted from one form to another.'} ],
+  'Pressure & Density':       [ {type:'mcq',q:'Pressure = Force ÷ Area. A force of 60 N acts over 0.5 m². What is the pressure?',opts:['A. 30 Pa','B. 60 Pa','C. 120 Pa','D. 90 Pa'],ans:'C'}, {type:'short',q:'Why does a sharp knife cut more easily than a blunt one?',ans:'A sharp knife has a smaller area, so the same force creates greater pressure, making it easier to cut.'} ],
+  'Heat & Temperature':       [ {type:'mcq',q:'What instrument measures temperature?',opts:['A. Barometer','B. Thermometer','C. Hygrometer','D. Manometer'],ans:'B'}, {type:'short',q:'State the difference between heat and temperature.',ans:'Heat is a form of energy (measured in joules); temperature is a measure of how hot or cold an object is (measured in °C or K).'} ],
+  'Transfer of Thermal Energy':[ {type:'mcq',q:'Heat transfer through a vacuum occurs by —',opts:['A. Conduction','B. Convection','C. Radiation','D. All three'],ans:'C'}, {type:'short',q:'Explain why a metal spoon gets hot faster than a wooden spoon when placed in hot soup.',ans:'Metal is a better conductor of heat than wood, so heat travels faster through the metal spoon.'} ],
+  'Light & Optics':           [ {type:'mcq',q:'The angle of reflection equals —',opts:['A. The angle of incidence','B. 90° minus the angle of incidence','C. Twice the angle of incidence','D. The angle of refraction'],ans:'A'}, {type:'short',q:'State the law of reflection.',ans:'The angle of incidence equals the angle of reflection, both measured from the normal.'} ],
+  'Sound & Waves':            [ {type:'mcq',q:'Sound travels fastest in —',opts:['A. Vacuum','B. Air','C. Water','D. Steel'],ans:'D'}, {type:'short',q:'What property of sound determines its pitch?',ans:'Frequency — higher frequency gives a higher pitch.'} ],
+  "Electricity – Circuits & Ohm's Law":[ {type:'mcq',q:"Ohm's Law states: V = ?",opts:['A. V = I + R','B. V = I × R','C. V = I / R','D. V = R / I'],ans:'B'}, {type:'short',q:'A resistor has resistance 10 Ω and current 2 A flows through it. What is the voltage across it?',ans:'V = IR = 2 × 10 = 20 V'} ],
+  'Magnetism & Electromagnetism':[ {type:'mcq',q:'Which material is NOT attracted to a magnet?',opts:['A. Iron','B. Nickel','C. Cobalt','D. Copper'],ans:'D'}, {type:'short',q:'State one way to increase the strength of an electromagnet.',ans:'Increase the current / increase the number of coils / use an iron core.'} ],
+  'Simple Machines & Moments':[ {type:'mcq',q:'A 10 N force at 0.5 m from a pivot creates a moment of —',opts:['A. 0.05 Nm','B. 5 Nm','C. 20 Nm','D. 50 Nm'],ans:'B'}, {type:'short',q:'State the principle of moments.',ans:'For a body in equilibrium, the sum of clockwise moments equals the sum of anticlockwise moments.'} ],
+
+  /* ── Zonghan · English ── */
+  'Vocabulary – Word Meaning in Context':[ {type:'mcq',q:'"The minister\'s candid remarks surprised everyone." "Candid" means —',opts:['A. Harsh','B. Frank and honest','C. Confusing','D. Diplomatic'],ans:'B'}, {type:'short',q:'Explain the word "resilient" as used in: "She remained resilient despite many setbacks."',ans:'Resilient means able to recover quickly from difficulties.'} ],
+  'Vocabulary – Synonyms & Antonyms':[ {type:'mcq',q:'Which is a synonym of "meticulous"?',opts:['A. Careless','B. Precise','C. Rapid','D. Vague'],ans:'B'}, {type:'short',q:'Give an antonym for "ambiguous".',ans:'Clear / unambiguous / definite'} ],
+  'Vocabulary – Phrasal Verbs & Idioms':[ {type:'mcq',q:'"She decided to call off the meeting." "Call off" means —',opts:['A. Postpone','B. Cancel','C. Attend','D. Organise'],ans:'B'}, {type:'short',q:'Explain the idiom: "It\'s raining cats and dogs."',ans:'It is raining very heavily.'} ],
+  'Grammar – Tenses':         [ {type:'mcq',q:'By 2025, the company ___ in Singapore for 50 years.',opts:['A. will operate','B. will have operated','C. has operated','D. operates'],ans:'B'}, {type:'short',q:'Rewrite using the past perfect: "He submitted the report. Then the deadline passed."',ans:'"He had submitted the report before the deadline passed."'} ],
+  'Grammar – Subject-Verb Agreement':[ {type:'mcq',q:'Neither the manager nor the staff ___ informed.',opts:['A. was','B. were','C. are','D. have been'],ans:'B'}, {type:'short',q:'Correct the error: "A number of students has not submitted their work."',ans:'"A number of students have not submitted their work."'} ],
+  'Grammar – Articles & Determiners':[ {type:'mcq',q:'Choose the correct article: "___ honest man is hard to find."',opts:['A. A','B. An','C. The','D. No article'],ans:'B'}, {type:'short',q:'Explain when we use "the" instead of "a/an".',ans:'We use "the" when referring to a specific or already-mentioned noun, or when there is only one of something.'} ],
+  'Grammar – Prepositions':   [ {type:'mcq',q:'"He is not interested ___ politics."',opts:['A. in','B. at','C. for','D. with'],ans:'A'}, {type:'short',q:'Fill in the blanks: "She arrived ___ noon ___ Monday."',ans:'"She arrived at noon on Monday."'} ],
+  'Grammar – Conjunctions & Sentence Structure':[ {type:'mcq',q:'Choose the correct conjunction: "___ he studied hard, he failed the exam."',opts:['A. Because','B. Although','C. So','D. If'],ans:'B'}, {type:'short',q:'Combine into one sentence using a relative clause: "The man is my uncle. He won the award."',ans:'"The man who won the award is my uncle."'} ],
+  'Grammar – Active & Passive Voice':[ {type:'mcq',q:'Which sentence is in passive voice?',opts:['A. The chef cooked the meal.','B. The meal was cooked by the chef.','C. The chef is cooking the meal.','D. The chef had cooked the meal.'],ans:'B'}, {type:'short',q:'Rewrite in passive voice: "Scientists discovered a new planet."',ans:'"A new planet was discovered by scientists."'} ],
+  'Reading Comprehension Skills':[ {type:'short',q:'What does it mean to "infer" from a passage?',ans:'To infer means to draw a conclusion that is not directly stated, using clues from the text.'}, {type:'short',q:'How do you identify the main idea of a paragraph?',ans:'Look for the topic sentence (often the first or last sentence) that summarises what the paragraph is about.'} ],
+  'Summary Writing':          [ {type:'short',q:'State two rules for writing a good summary.',ans:'Use your own words; include only relevant points stated in the passage; be concise.'}, {type:'short',q:'What should you NOT include in a summary?',ans:'Your own opinions, examples not in the passage, or irrelevant details.'} ],
+  'Editing & Error Correction':[ {type:'mcq',q:'Identify the error: "Each of the students have their own locker."',opts:['A. Each → Every','B. have → has','C. their → his','D. No error'],ans:'B'}, {type:'short',q:'Correct: "She is the most cleverest student in the class."',ans:'"She is the cleverest student in the class." (remove "most")'} ],
+  'Situational Writing':      [ {type:'short',q:'Name four features a formal letter must include.',ans:'Sender\'s address; date; recipient\'s address; salutation (Dear Sir/Madam); formal sign-off (Yours faithfully/sincerely).'}, {type:'short',q:'What tone should you use in a letter of complaint?',ans:'Firm but polite and formal — state facts clearly without being rude.'} ],
+  'Continuous Writing – Narrative':[ {type:'short',q:'What is the PEEL structure adapted for narrative writing?',ans:'Point (situation) → Elaboration (details, dialogue, action) → Effect (character\'s feelings/reaction) → Link (transition to next event).'}, {type:'short',q:'Write one sentence using a simile to describe fear.',ans:'e.g. "Fear gripped her chest like a fist of ice."'} ],
+  'Continuous Writing – Expository & Argumentative':[ {type:'short',q:'State the structure of an argumentative essay.',ans:'Introduction with thesis → Body paragraphs (point + evidence + explanation) → Counter-argument + rebuttal → Conclusion.'}, {type:'short',q:'What is the purpose of a "counter-argument" paragraph?',ans:'To acknowledge the opposing view and then refute it, strengthening your own argument.'} ]
+};
       { type:'short', q:'Rewrite in passive voice: "The teacher marked all the exam papers."', ans:'"All the exam papers were marked by the teacher."' }
     ]
   }
@@ -700,18 +780,19 @@ function selectSubject(id) {
   selectedSubject=user.subjects.find(s=>s.id===id);
   selectedTopics=[];
   document.querySelectorAll('.subject-card').forEach(c=>c.classList.toggle('active',c.dataset.id===id));
+  // Hide example panel when switching subject — reappears on topic pill click
+  document.getElementById('subject-examples').style.display='none';
   buildTopicPills();
-  renderSubjectExamples(id);
 }
 
-/* ── Subject Example Preview ── */
-function renderSubjectExamples(subjId) {
+/* ── Topic Example Preview — fires when a topic pill is clicked ── */
+function renderTopicExample(topicName) {
   const box=document.getElementById('subject-examples');
-  const examples=SUBJECT_EXAMPLES[currentUser]?.[subjId];
+  const examples=TOPIC_EXAMPLES[topicName];
   if (!examples||examples.length===0) { box.style.display='none'; return; }
 
   let html=`<div class="subject-examples">
-    <div class="subject-examples-label">Sample questions for this subject</div>`;
+    <div class="subject-examples-label">Sample questions · ${topicName}</div>`;
 
   examples.forEach(ex=>{
     const typeLabel=ex.type==='mcq'?'Multiple Choice':'Short Answer';
@@ -721,18 +802,19 @@ function renderSubjectExamples(subjId) {
     if (ex.type==='mcq'&&ex.opts) {
       html+='<div class="example-options">';
       ex.opts.forEach(opt=>{
-        const letter=opt[0];
-        const isAns=letter===ex.ans;
+        const isAns=opt[0]===ex.ans;
         html+=`<div class="example-option ${isAns?'correct-opt':''}">${opt}${isAns?' ✓':''}</div>`;
       });
       html+='</div>';
     } else {
-      html+=`<div class="example-option correct-opt" style="margin-top:4px">Answer: ${ex.ans}</div>`;
+      html+=`<div class="example-option correct-opt" style="margin-top:4px">✓ ${ex.ans}</div>`;
     }
     html+='</div>';
   });
   html+='</div>';
   box.innerHTML=html; box.style.display='';
+  // Scroll the example into view smoothly
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
 function buildTopicPills() {
@@ -743,15 +825,31 @@ function buildTopicPills() {
     selectedTopics=[];
     pills.querySelectorAll('.topic-pill').forEach(p=>p.classList.remove('active'));
     allPill.classList.add('active');
+    // Hide examples when "All topics" selected
+    document.getElementById('subject-examples').style.display='none';
   });
   pills.appendChild(allPill);
   selectedSubject.topics.forEach(t=>{
     const p=makePill(t,false,()=>{
       allPill.classList.remove('active');
       const idx=selectedTopics.indexOf(t);
-      if (idx>-1){selectedTopics.splice(idx,1);p.classList.remove('active');}
-      else{selectedTopics.push(t);p.classList.add('active');}
-      if (selectedTopics.length===0) allPill.classList.add('active');
+      if (idx>-1) {
+        selectedTopics.splice(idx,1);
+        p.classList.remove('active');
+        // If this was the only selected topic, hide examples
+        if (selectedTopics.length===0) {
+          allPill.classList.add('active');
+          document.getElementById('subject-examples').style.display='none';
+        } else {
+          // Show example for the most recently selected topic
+          renderTopicExample(selectedTopics[selectedTopics.length-1]);
+        }
+      } else {
+        selectedTopics.push(t);
+        p.classList.add('active');
+        // Show example for the just-selected topic
+        renderTopicExample(t);
+      }
     });
     pills.appendChild(p);
   });
