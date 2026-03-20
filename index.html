@@ -251,7 +251,7 @@
     .error-entry-header { display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; }
     .error-badge { padding:2px 8px; border-radius:10px; font-size:10px; font-weight:600; flex-shrink:0; }
     .error-badge.pending { background:var(--red-bg); color:var(--red); border:1px solid var(--red-border); }
-    .error-badge.mastered { background:var(--green-bg); color:var(--green); border:1px solid var(--green-border); }
+    .error-badge.corrected { background:var(--green-bg); color:var(--green); border:1px solid var(--green-border); }
     .error-q { font-size:13px; color:var(--text2); flex:1; }
     .error-meta { font-size:11px; color:var(--text3); flex-shrink:0; }
     .error-body { padding:14px; border-top:1px solid var(--border); font-size:13px; color:var(--text2); line-height:1.65; display:none; }
@@ -476,7 +476,8 @@
       <div class="row">
         <div class="card-label" style="margin:0" id="eb-title">Error Bank</div>
         <div class="spacer"></div>
-        <button class="btn btn-primary btn-sm" onclick="practiceErrorBank()" id="practice-errors-btn" disabled>Practice errors →</button>
+        <button class="btn btn-primary btn-sm" onclick="practiceErrorBank(false)" id="practice-errors-btn" disabled>Practice all →</button>
+        <button class="btn btn-ghost btn-sm" onclick="practiceErrorBank(true)" id="practice-uncorrected-btn" disabled>Uncorrected only →</button>
         <button class="btn btn-danger btn-sm" onclick="clearErrorBank()">Clear all</button>
       </div>
       <div class="divider"></div>
@@ -685,19 +686,35 @@ let answers        = [];
 let results        = [];
 let score          = 0;
 let ebFilter       = 'all';
+// Error bank practice tracking
+let isErrorBankPractice = false;   // true when practicing from error bank
+let errorBankSessionIds = [];      // IDs of error bank items in current session
 
 /* ══════════════════════════════════════════
    PER-USER STORAGE
 ══════════════════════════════════════════ */
-function bankKey() { return `sg_errorbank_${currentUser}`; }
-function perfKey() { return `sg_perf_${currentUser}`; }
+function bankKey()   { return `sg_errorbank_${currentUser}`; }
+function perfKey()   { return `sg_perf_${currentUser}`; }
+function recentKey() { return `sg_recent_qs_${currentUser}`; }
+
+function loadRecentQs()  { try { return JSON.parse(localStorage.getItem(recentKey())||'[]'); } catch(e) { return []; } }
+function saveRecentQs(qs) {
+  // Keep last 60 question texts to avoid repeats
+  const trimmed = qs.slice(-60);
+  localStorage.setItem(recentKey(), JSON.stringify(trimmed));
+}
+function addToRecentQs(questionList) {
+  const recent = loadRecentQs();
+  questionList.forEach(q => { if (!recent.includes(q.question)) recent.push(q.question); });
+  saveRecentQs(recent);
+}
 function loadBank()  { try { return JSON.parse(localStorage.getItem(bankKey())||'[]'); } catch(e) { return []; } }
 function saveBank(b) { localStorage.setItem(bankKey(),JSON.stringify(b)); updateBadge(); }
 function loadPerf()  { try { return JSON.parse(localStorage.getItem(perfKey())||'{}'); } catch(e) { return {}; } }
 function savePerf(p) { localStorage.setItem(perfKey(),JSON.stringify(p)); }
 
 function updateBadge() {
-  const n=loadBank().filter(e=>!e.mastered).length;
+  const n=loadBank().filter(e=>!e.corrected).length;
   const b=document.getElementById('error-count-badge');
   b.textContent=n; b.style.display=n>0?'':'none';
 }
@@ -713,8 +730,20 @@ function autoAddError(q,userAnswer) {
   bank.push({ id:Date.now()+Math.random(), question:q.question, type:q.type, options:q.options,
     answer:q.answer, explanation:q.explanation, topic:q.topic||'—',
     subject:q._subject||'', subjectName:q._subjectName||'', level:q._level||'',
-    userAnswer, addedAt:new Date().toISOString(), mastered:false, attempts:0 });
+    userAnswer, addedAt:new Date().toISOString(), mastered:false, corrected:false, correctedAt:null, attempts:0 });
   saveBank(bank);
+}
+
+/* Mark an error bank item as corrected (answered correctly during error bank practice) */
+function markErrorCorrected(questionText) {
+  const bank=loadBank();
+  const e=bank.find(x=>x.question===questionText);
+  if (e && !e.corrected) {
+    e.corrected=true;
+    e.correctedAt=new Date().toISOString();
+    e.attempts=(e.attempts||0)+1;
+    saveBank(bank);
+  }
 }
 
 /* ══════════════════════════════════════════
@@ -934,6 +963,7 @@ async function callClaude(prompt,maxTokens) {
 async function startQuiz(override) {
   if (!override&&!selectedSubject){alert('Please select a subject.');return;}
   questions=[];current=0;answers=[];results=[];score=0;
+  isErrorBankPractice=false; errorBankSessionIds=[];
   switchTab('practice'); showPracticeView('loading');
 
   const numQ  =override?.numQ  ||document.getElementById('num-q').value;
@@ -948,11 +978,20 @@ async function startQuiz(override) {
   const topicLine=topics.length>0?`Focus ONLY on these topics: ${topics.join(', ')}.`:`Cover a variety of topics across the ${subj.name} syllabus.`;
   const typeRule=qType==='mcq'?'All questions must be type "mcq".':qType==='short'?'All questions must be type "short_answer".':'Mix mcq and short_answer roughly equally.';
 
+  // Build avoid-repeat instruction from recent question history
+  const recentQs = loadRecentQs();
+  const avoidLine = recentQs.length > 0
+    ? '\nIMPORTANT: Do NOT repeat or closely paraphrase any of these recently asked questions:\n'
+      + recentQs.slice(-30).map((q,i) => (i+1) + '. ' + q).join('\n')
+      + '\nGenerate completely fresh questions on different angles or sub-topics.'
+    : '';
+
   const prompt=`You are an experienced Singapore MOE ${user.school} teacher.
 Generate exactly ${numQ} ${diff}-level exam practice questions for Singapore ${lvlLabel} ${subj.name}.
 ${topicLine}
 ${typeRule}
 Each question MUST include a "topic" field. Use age-appropriate language for ${lvlLabel} students.
+${avoidLine}
 
 Return ONLY valid JSON with no preamble or markdown:
 {"questions":[
@@ -966,6 +1005,8 @@ Return ONLY valid JSON with no preamble or markdown:
     const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
     questions=parsed.questions;
     questions.forEach(q=>{q._subject=subj.id;q._subjectName=subj.name;q._level=lvl;});
+    // Save these questions so next quiz avoids repeating them
+    addToRecentQs(questions);
     answers=new Array(questions.length).fill(null);
     results=new Array(questions.length).fill(null);
     showPracticeView('quiz'); renderQuestion();
@@ -1112,6 +1153,12 @@ Respond ONLY with JSON: {"correct":true_or_false,"feedback":"1-2 sentences of te
   results[current]={q,userAnswer,isCorrect};
   if (q.topic) recordPerf(q.topic,q._subjectName||q._subject,isCorrect);
   if (!isCorrect){autoAddError(q,userAnswer);showToast('Added to your Error Bank');}
+
+  // If in error bank practice mode and answered correctly, mark the source error as corrected
+  if (isCorrect && isErrorBankPractice && q._errorBankQuestion) {
+    markErrorCorrected(q._errorBankQuestion);
+    showToast('✓ Error marked as corrected!');
+  }
 
   // Play answer effect
   if (isCorrect) playCorrect(); else playWrong();
@@ -1333,49 +1380,71 @@ function renderErrorBank() {
   const filterEl=document.getElementById('error-filter');
   const listEl=document.getElementById('error-list');
   const practiceBtn=document.getElementById('practice-errors-btn');
-  const total=bank.length; const mastered=bank.filter(e=>e.mastered).length; const pending=total-mastered;
+  const uncorrectedBtn=document.getElementById('practice-uncorrected-btn');
+
+  const total=bank.length;
+  const corrected=bank.filter(e=>e.corrected).length;
+  const uncorrected=total-corrected;
+
   statsEl.innerHTML=`
-    <div class="stat-item"><div class="stat-val">${total}</div><div class="stat-lbl">Total</div></div>
-    <div class="stat-item"><div class="stat-val" style="color:var(--red)">${pending}</div><div class="stat-lbl">Pending</div></div>
-    <div class="stat-item"><div class="stat-val" style="color:var(--green)">${mastered}</div><div class="stat-lbl">Mastered</div></div>`;
+    <div class="stat-item"><div class="stat-val">${total}</div><div class="stat-lbl">Total errors</div></div>
+    <div class="stat-item"><div class="stat-val" style="color:var(--red)">${uncorrected}</div><div class="stat-lbl">Uncorrected</div></div>
+    <div class="stat-item"><div class="stat-val" style="color:var(--green)">${corrected}</div><div class="stat-lbl">Corrected</div></div>`;
+
   if (total===0) {
-    filterEl.innerHTML=''; listEl.innerHTML='<div class="empty-state"><div class="big">Bank is empty</div>Wrong answers are automatically saved here.</div>';
-    practiceBtn.disabled=true; return;
+    filterEl.innerHTML='';
+    listEl.innerHTML='<div class="empty-state"><div class="big">Bank is empty</div>Wrong answers are automatically saved here.</div>';
+    practiceBtn.disabled=true;
+    uncorrectedBtn.disabled=true;
+    return;
   }
+
   practiceBtn.disabled=false;
+  uncorrectedBtn.disabled=(uncorrected===0);
+
   const user=USERS[currentUser];
   const subjIds=[...new Set(bank.map(e=>e.subject))];
-  const filterDefs=[{val:'all',label:'All'},{val:'pending',label:'Pending'},{val:'mastered',label:'Mastered'},
-    ...subjIds.map(id=>({val:'s:'+id,label:user.subjects.find(s=>s.id===id)?.name||id}))];
+  const filterDefs=[
+    {val:'all',       label:'All'},
+    {val:'uncorrected',label:'Uncorrected'},
+    {val:'corrected',  label:'Corrected'},
+    ...subjIds.map(id=>({val:'s:'+id, label:user.subjects.find(s=>s.id===id)?.name||id}))
+  ];
   filterEl.innerHTML='';
   filterDefs.forEach(f=>{
     const p=document.createElement('div');
     p.className='filter-pill'+(ebFilter===f.val?' active':'');
-    p.textContent=f.label; p.onclick=()=>{ebFilter=f.val;renderErrorBank();};
+    p.textContent=f.label; p.onclick=()=>{ebFilter=f.val; renderErrorBank();};
     filterEl.appendChild(p);
   });
+
   let entries=bank.slice().reverse();
-  if (ebFilter==='pending') entries=entries.filter(e=>!e.mastered);
-  if (ebFilter==='mastered') entries=entries.filter(e=>e.mastered);
+  if (ebFilter==='uncorrected') entries=entries.filter(e=>!e.corrected);
+  if (ebFilter==='corrected')   entries=entries.filter(e=>e.corrected);
   if (ebFilter.startsWith('s:')) entries=entries.filter(e=>e.subject===ebFilter.slice(2));
+
   listEl.innerHTML='';
   entries.forEach(entry=>{
-    const dateStr=entry.addedAt?new Date(entry.addedAt).toLocaleDateString('en-SG',{day:'numeric',month:'short'}):'';
-    const preview=entry.question.length>65?entry.question.slice(0,65)+'…':entry.question;
+    const dateStr=entry.addedAt ? new Date(entry.addedAt).toLocaleDateString('en-SG',{day:'numeric',month:'short'}) : '';
+    const correctedStr=entry.correctedAt ? new Date(entry.correctedAt).toLocaleDateString('en-SG',{day:'numeric',month:'short'}) : null;
+    const preview=entry.question.length>65 ? entry.question.slice(0,65)+'…' : entry.question;
+    const badgeClass=entry.corrected ? 'corrected' : 'pending';
+    const badgeLabel=entry.corrected ? '✓ Corrected' : 'Uncorrected';
     const div=document.createElement('div'); div.className='error-entry';
     div.innerHTML=`
       <div class="error-entry-header" onclick="this.nextElementSibling.classList.toggle('open')">
-        <span class="error-badge ${entry.mastered?'mastered':'pending'}">${entry.mastered?'Mastered':'Pending'}</span>
+        <span class="error-badge ${badgeClass}">${badgeLabel}</span>
         <div class="error-q">${preview}</div>
         <div class="error-meta">${entry.subjectName||entry.subject} · ${dateStr}</div>
       </div>
       <div class="error-body">
         <strong>Topic:</strong> ${entry.topic||'—'}<br>
-        <strong>Your answer:</strong> ${entry.userAnswer||'—'}<br>
+        <strong>Your wrong answer:</strong> ${entry.userAnswer||'—'}<br>
         <strong>Correct answer:</strong> ${entry.answer}<br>
-        <strong>Explanation:</strong> ${entry.explanation}
+        <strong>Explanation:</strong> ${entry.explanation}<br>
+        ${correctedStr ? `<strong>Corrected on:</strong> ${correctedStr}<br>` : ''}
         <div class="error-actions">
-          <button class="btn btn-ghost btn-sm" onclick="toggleMastered('${entry.id}')">${entry.mastered?'Unmark mastered':'✓ Mark mastered'}</button>
+          <button class="btn btn-ghost btn-sm" onclick="toggleCorrected('${entry.id}')">${entry.corrected ? 'Mark as uncorrected' : '✓ Mark as corrected'}</button>
           <button class="btn btn-danger btn-sm" onclick="deleteError('${entry.id}')">Delete</button>
         </div>
       </div>`;
@@ -1383,10 +1452,14 @@ function renderErrorBank() {
   });
 }
 
-function toggleMastered(id) {
+function toggleCorrected(id) {
   const bank=loadBank(); const e=bank.find(x=>String(x.id)===String(id));
-  if (e){e.mastered=!e.mastered;e.attempts=(e.attempts||0)+1;}
-  saveBank(bank); renderErrorBank();
+  if (e) {
+    e.corrected=!e.corrected;
+    e.correctedAt=e.corrected ? new Date().toISOString() : null;
+    e.attempts=(e.attempts||0)+1;
+  }
+  saveBank(bank); renderErrorBank(); updateBadge();
 }
 function deleteError(id) {
   if (!confirm('Remove this item from your error bank?')) return;
@@ -1400,24 +1473,47 @@ function clearErrorBank() {
 /* ══════════════════════════════════════════
    PRACTICE ERROR BANK
 ══════════════════════════════════════════ */
-async function practiceErrorBank() {
-  const bank=loadBank().filter(e=>!e.mastered);
-  if (bank.length===0){alert('No pending errors — great job!');return;}
-  const sample=bank.sort(()=>Math.random()-.5).slice(0,Math.min(10,bank.length));
+async function practiceErrorBank(uncorrectedOnly=false) {
+  const allBank = loadBank();
+  const pool = uncorrectedOnly ? allBank.filter(e=>!e.corrected) : allBank;
+  if (pool.length===0) {
+    alert(uncorrectedOnly
+      ? 'Great job — all errors have been corrected! Try "Practice all" instead.'
+      : 'Error bank is empty. Keep quizzing to build it up!');
+    return;
+  }
+  // Full random shuffle then pick up to 10
+  const sample = pool.slice().sort(()=>Math.random()-0.5).slice(0, Math.min(10, pool.length));
   switchTab('practice'); showPracticeView('loading');
-  document.getElementById('loading-msg').textContent='Generating practice from your error bank…';
-  const user=USERS[currentUser];
-  const summary=sample.map((e,i)=>`${i+1}. Subject:${e.subjectName}|Topic:${e.topic}|Q:${e.question}|Wrong:${e.userAnswer}|Correct:${e.answer}`).join('\n');
-  const prompt=`You are a Singapore ${user.school} teacher. This student got these questions WRONG:\n${summary}\n\nCreate ${sample.length} NEW practice questions (different wording, same concepts). Vary between mcq and short_answer. Use age-appropriate language.\n\nReturn ONLY valid JSON:\n{"questions":[{"id":1,"type":"mcq","topic":"Topic","question":"...","options":["A. ..","B. ..","C. ..","D. .."],"answer":"B","explanation":"..."}]}`;
+  document.getElementById('loading-msg').textContent = uncorrectedOnly
+    ? 'Preparing uncorrected errors practice…'
+    : 'Randomly selecting from your error bank…';
+
+  const user = USERS[currentUser];
+  const summary = sample.map((e,i)=>
+    `${i+1}. Subject:${e.subjectName}|Topic:${e.topic}|Original wrong answer:${e.userAnswer}|Correct:${e.answer}|Original question:${e.question}`
+  ).join('\n');
+
+  const prompt = `You are a Singapore ${user.school} teacher. This student previously got these questions WRONG:\n${summary}\n\nCreate ${sample.length} NEW practice questions testing the SAME concepts with completely different wording and scenarios. Vary between mcq and short_answer. Use age-appropriate language.\n\nReturn ONLY valid JSON:\n{"questions":[{"id":1,"type":"mcq","topic":"Topic","question":"...","options":["A. ..","B. ..","C. ..","D. .."],"answer":"B","explanation":"..."},{"id":2,"type":"short_answer","topic":"Topic","question":"...","options":null,"answer":"Key points.","explanation":"..."}]}`;
+
   try {
-    const raw=await callClaude(prompt,3200);
-    const parsed=JSON.parse(raw.replace(/```json|```/g,'').trim());
-    questions=parsed.questions;
-    const refSubj=user.subjects.find(s=>s.id===(sample[0].subject||user.subjects[0].id))||user.subjects[0];
-    questions.forEach(q=>{q._subject=sample[0].subject;q._subjectName=sample[0].subjectName||refSubj.name;q._level=sample[0].level||selectedLevel;});
-    current=0;answers=new Array(questions.length).fill(null);results=new Array(questions.length).fill(null);score=0;
-    showPracticeView('quiz');renderQuestion();
-  } catch(e){showPracticeSetup();alert('Error: '+e.message);}
+    const raw = await callClaude(prompt, 3200);
+    const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    questions = parsed.questions;
+    const refSubj = user.subjects.find(s=>s.id===(sample[0].subject||user.subjects[0].id))||user.subjects[0];
+    questions.forEach((q, i) => {
+      const src = sample[i % sample.length] || sample[0];
+      q._subject = src.subject;
+      q._subjectName = src.subjectName || refSubj.name;
+      q._level = src.level || selectedLevel;
+      q._errorBankQuestion = src.question; // original question to mark corrected on success
+    });
+    current=0; answers=new Array(questions.length).fill(null);
+    results=new Array(questions.length).fill(null); score=0;
+    isErrorBankPractice=true;
+    errorBankSessionIds=sample.map(e=>e.id);
+    showPracticeView('quiz'); renderQuestion();
+  } catch(e) { showPracticeSetup(); alert('Error: '+e.message); }
 }
 
 /* ══════════════════════════════════════════
